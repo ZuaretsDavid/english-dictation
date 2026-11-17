@@ -135,6 +135,10 @@ textarea{width:100%;min-height:220px;direction:rtl;font-family:var(--en-font),Ru
           <option value="1">מהיר</option>
         </select>
       </label>
+      <label class="chk">קול:
+        <select id="voiceSel" onchange="chooseVoice(this.value)" style="max-width:230px"></select>
+      </label>
+      <button class="speak sm" onclick="testVoice()" title="השמעת דוגמה">🔊</button>
     </div>
   </div>
   <div class="modes">
@@ -422,13 +426,29 @@ function toast(t){ const el=$('#toast'); el.textContent=t; el.classList.add('sho
 function setProg(id,i,n){ $(id).style.width = (n? (i/n*100):0)+'%'; }
 
 /* ---------- speech & sound ---------- */
-let voice=null;
+let voice=null, enVoices=[];
+// best clear US-English female voices first (Edge "Natural", Apple Premium/Enhanced, Google)
+const FEMALE_PREF=[/\bava\b.*(natural|premium|enhanced)/i,/jenny.*natural/i,/aria.*natural/i,/emma.*natural/i,/michelle.*natural/i,/\bana\b.*natural/i,
+  /(samantha|allison|susan|nicky|zoe).*(premium|enhanced)/i,/google us english/i,/samantha/i,/\bava\b/i,/allison/i,/susan/i,/nicky/i,/zira/i,/\bfemale\b/i];
+const MALE=/\b(david|mark|guy|andrew|brian|christopher|eric|roger|steffan|alex|fred|aaron|tom|daniel|evan|nathan|male)\b/i;
+const voiceScore=v=>{ const i=FEMALE_PREF.findIndex(re=>re.test(v.name)); return MALE.test(v.name)?999:(i<0?100:i); };
+const voiceLabel=v=>(/(natural|premium|enhanced|google)/i.test(v.name)?'⭐ ':'')+v.name.replace(/Microsoft\s*/i,'').replace(/Online\s*/i,'').replace(/\s*-\s*English.*$/i,'').trim();
 function pickVoice(){
-  const vs = speechSynthesis.getVoices();
-  voice = vs.find(v=>/^en[-_]US/i.test(v.lang) && /zira|jenny|aria|samantha|google us/i.test(v.name))
-       || vs.find(v=>/^en[-_]US/i.test(v.lang)) || vs.find(v=>/^en/i.test(v.lang)) || null;
+  const all=speechSynthesis.getVoices();
+  enVoices=all.filter(v=>/^en[-_]US/i.test(v.lang));
+  if(!enVoices.length) enVoices=all.filter(v=>/^en/i.test(v.lang));
+  enVoices.sort((a,b)=>voiceScore(a)-voiceScore(b));
+  const saved=LS.get('voice',null);
+  voice = enVoices.find(v=>v.name===saved) || enVoices[0] || null;
+  const sel=document.getElementById('voiceSel');
+  if(sel){
+    sel.innerHTML = enVoices.length ? enVoices.map((v,i)=>`<option value="${i}">${esc(voiceLabel(v))}</option>`).join('') : '<option>אין קול באנגלית במכשיר</option>';
+    if(voice) sel.value=enVoices.indexOf(voice);
+  }
 }
-if('speechSynthesis' in window){ pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+function chooseVoice(i){ voice=enVoices[+i]||voice; if(voice) LS.set('voice',voice.name); testVoice(); }
+function testVoice(){ speak("Hello! Let's practice spelling. North, south, east, west."); }
+if('speechSynthesis' in window){ setTimeout(pickVoice,0); speechSynthesis.onvoiceschanged = pickVoice; }
 function speak(t){
   if(!('speechSynthesis' in window) || !t) return;
   speechSynthesis.cancel();
