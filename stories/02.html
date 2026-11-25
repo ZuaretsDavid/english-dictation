@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>הסיפורים של אור</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#fff8ec; --card:#ffffff; --ink:#2b2d42; --muted:#7a7d92;
+    --accent:#ff7a59; --accent2:#4cc9f0; --target:#ffe066; --target-ink:#7a5200;
+    --line-active:#e8f7fd; --ok:#2ec4b6; --bad:#ef476f; --shadow:0 6px 20px rgba(43,45,66,.10);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Rubik",system-ui,sans-serif;font-size:20px;line-height:1.5}
+  header{padding:18px 16px 8px;text-align:center}
+  header h1{margin:0;font-size:28px}
+  header p{margin:4px 0 0;color:var(--muted);font-size:19px}
+  main{max-width:820px;margin:0 auto;padding:8px 16px 60px}
+
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:10px 0 16px}
+  .tab{border:2px solid var(--accent);background:#fff;color:var(--accent);border-radius:999px;padding:6px 14px;font:inherit;font-size:18px;font-weight:700;cursor:pointer}
+  .tab.on{background:var(--accent);color:#fff}
+  .tab.done::after{content:" ✓"}
+
+  .card{background:var(--card);border-radius:22px;box-shadow:var(--shadow);padding:20px 18px}
+  .story-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+  .story-title{font-family:"Andika",sans-serif;font-weight:700;font-size:30px;direction:ltr;margin:0}
+  .story-title-he{color:var(--muted);font-size:21px;margin:0}
+  .controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .btn{border:none;border-radius:14px;padding:10px 16px;font:inherit;font-weight:700;cursor:pointer;background:var(--accent2);color:#fff;display:inline-flex;gap:6px;align-items:center}
+  .btn.secondary{background:#eef0f6;color:var(--ink)}
+  .btn:active{transform:scale(.96)}
+  .speed{display:inline-flex;background:#eef0f6;border-radius:14px;padding:3px}
+  .speed button{border:none;background:none;font:inherit;padding:7px 12px;border-radius:11px;cursor:pointer;color:var(--ink)}
+  .speed button.on{background:#fff;font-weight:700;box-shadow:0 1px 4px rgba(0,0,0,.1)}
+
+  .legend{font-size:18px;color:var(--muted);margin:6px 0 14px}
+  .legend mark{background:var(--target);color:var(--target-ink);padding:0 6px;border-radius:6px}
+
+  .line{display:flex;gap:10px;align-items:flex-start;padding:10px 8px;border-radius:16px;transition:background .2s}
+  .line.active{background:var(--line-active)}
+  .line-btns{display:flex;flex-direction:column;gap:6px;flex-shrink:0}
+  .icon-btn{width:44px;height:44px;border-radius:50%;border:none;cursor:pointer;font-size:20px;background:#eef0f6;display:grid;place-items:center}
+  .icon-btn.speak{background:var(--accent2)}
+  .line-body{flex:1;min-width:0}
+  .en{direction:ltr;text-align:left;font-family:"Andika",sans-serif;font-weight:400;font-size:25px;line-height:1.7}
+  .emoji{margin-right:6px}
+  .w{cursor:pointer;border-radius:7px;padding:0 2px;transition:background .15s}
+  .w:hover{background:#f0f0f5}
+  .w.t{background:var(--target);color:var(--target-ink);font-weight:700}
+  .w.t.seen{box-shadow:inset 0 -3px 0 var(--ok)}
+  .w.reading{outline:3px solid var(--accent);background:#ffd9cf}
+  .he{direction:rtl;text-align:right;font-size:23px;color:#3d5a80;background:#f3f8ff;border-radius:12px;padding:6px 12px;margin-top:6px;display:none}
+  .he.show{display:block}
+
+  .pop{position:absolute;z-index:50;background:#fff;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.2);padding:12px 14px;min-width:190px;max-width:280px;display:none;text-align:center}
+  .pop.show{display:block}
+  .pop .p-en{font-family:"Andika",sans-serif;font-weight:700;font-size:26px;direction:ltr}
+  .pop .p-he{font-size:25px;font-weight:700;color:#3d5a80;margin:2px 0}
+  .pop .p-base{font-size:17px;color:var(--muted);direction:rtl}
+  .pop .p-star{display:inline-block;font-size:16px;background:var(--target);color:var(--target-ink);border-radius:999px;padding:1px 10px;margin-top:4px;font-weight:700}
+  .pop .p-btns{display:flex;gap:6px;justify-content:center;margin-top:8px}
+  .pop .p-btns button{border:none;border-radius:12px;padding:6px 10px;font:inherit;font-size:17px;cursor:pointer;background:#eef0f6}
+
+  .section{margin-top:26px}
+  .section h2{font-size:24px;margin:0 0 4px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+  .progress{font-size:18px;font-weight:500;color:var(--muted)}
+  .bar{height:10px;background:#eef0f6;border-radius:999px;overflow:hidden;margin:6px 0 12px}
+  .bar div{height:100%;background:var(--ok);width:0;transition:width .3s}
+  .filter-btn{margin:0 0 12px;font-size:18px;padding:8px 14px}
+  .filter-btn.on{background:var(--bad);color:#fff}
+  .hint-link{border:none;background:none;color:var(--accent);font:inherit;font-weight:700;cursor:pointer;text-decoration:underline;padding:0 4px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{border:2px solid var(--target);background:#fffbe8;border-radius:14px;padding:6px 12px;cursor:pointer;font:inherit;display:flex;gap:8px;align-items:baseline}
+  .chip b{font-family:"Andika",sans-serif;font-size:19px;direction:ltr}
+  .chip span{color:#3d5a80}
+  .chip.seen{border-color:var(--ok);background:#e9fbf9}
+  .chip.seen::before{content:"✓";color:var(--ok);font-weight:800}
+
+  /* משחק התאמה */
+  .game{background:#f3f8ff;border-radius:18px;padding:16px}
+  .game p{margin:0 0 12px;color:var(--muted);font-size:19px}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .col{display:flex;flex-direction:column;gap:8px}
+  .card-btn{border:2px solid #d6dcf0;background:#fff;border-radius:14px;padding:10px 8px;font:inherit;font-size:21px;cursor:pointer;min-height:52px;transition:all .15s}
+  .card-btn.en-card{font-family:"Andika",sans-serif;font-size:22px;direction:ltr}
+  .card-btn.sel{border-color:var(--accent2);background:#e8f7fd;transform:scale(1.03)}
+  .card-btn.ok{border-color:var(--ok);background:#e9fbf9;color:#1a8077;cursor:default}
+  .card-btn.ok::before{content:"✓ "}
+  .card-btn.bad{border-color:var(--bad);background:#ffe6ec;animation:shake .35s}
+  @keyframes shake{25%{transform:translateX(-6px)}50%{transform:translateX(6px)}75%{transform:translateX(-4px)}}
+  .win{display:none;text-align:center;margin-top:14px}
+  .win.show{display:block}
+  .win div{font-size:26px;font-weight:700;margin-bottom:8px}
+  .score{font-size:18px;color:var(--muted);margin-top:8px;text-align:center}
+
+  .note{font-size:17px;color:var(--muted);text-align:center;margin-top:14px}
+  @media (max-width:560px){
+    .en{font-size:21px}
+    .story-title{font-size:24px}
+    .icon-btn{width:40px;height:40px;font-size:18px}
+    .card-btn{font-size:19px}
+    .card-btn.en-card{font-size:19px}
+  }
+
+  /* ===== פס המותג (זהה בכל העמודים) ===== */
+  .bb{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:8px 14px;background:#fff;border-bottom:3px solid #E0A562;font-family:Rubik,system-ui,sans-serif;direction:rtl}
+  .bb-brand{display:flex;align-items:center;gap:8px;text-decoration:none;color:#0F766E}
+  .bb-brand svg{width:42px;height:42px;transition:transform .3s}
+  .bb-brand:hover svg{transform:rotate(-6deg) scale(1.08)}
+  .bb-txt{display:flex;flex-direction:column;line-height:1.15}
+  .bb-txt b{font-family:Andika,sans-serif;font-size:19px;direction:ltr;text-align:right}
+  .bb-txt small{font-size:15px;color:#A8692E;font-weight:600}
+  .bb-tabs{display:flex;gap:6px}
+  .bb-tabs a{text-decoration:none;font-weight:700;font-size:18px;padding:7px 14px;border-radius:999px;color:#0F766E;border:2px solid #0F766E;background:#fff}
+  .bb-tabs a.on{background:#0F766E;color:#fff}
+  .bb-ver{align-self:center;font-size:12px;color:#9a9cad;direction:ltr;margin-inline-start:4px}
+</style>
+</head>
+<body>
+<nav class="bb" aria-label="ניווט ראשי">
+  <a class="bb-brand" href="../index.html" aria-label="unbox your English, לדף הבית"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="14" y="4" width="20" height="20" rx="5" fill="#0F766E" transform="rotate(-10 24 14)"/><text x="24" y="20" text-anchor="middle" font-family="Andika,Rubik,sans-serif" font-weight="700" font-size="15" fill="#fff" transform="rotate(-10 24 14)">A</text><path d="M6 22 L42 22 L39 44 L9 44 Z" fill="#E0A562"/><path d="M6 22 L2 15 M42 22 L46 15" stroke="#A8692E" stroke-width="3" stroke-linecap="round"/><rect x="21" y="22" width="6" height="22" fill="#F0C48A" opacity=".8"/></svg><span class="bb-txt"><b>unbox your English</b><small>לצאת מהקופסה עם יראת זוארץ</small></span></a>
+  <div class="bb-tabs"><a href="../dictation.html">📝 הכתבה</a><a href="../stories/index.html" class="on">📚 סיפורים</a><span class="bb-ver" title="גרסה">v<!--VER-->2.0.0<!--/VER--></span></div>
+</nav>
+<header>
+  <h1>📚 הסיפורים של אור</h1>
+  <p>לוחצים על מילה כדי לראות מה היא אומרת · לוחצים על 🔊 כדי לשמוע</p>
+</header>
+
+<main>
+  <nav class="tabs" id="tabs"></nav>
+
+  <section class="card">
+    <div class="story-head">
+      <div>
+        <h2 class="story-title" id="title"></h2>
+        <p class="story-title-he" id="titleHe"></p>
+      </div>
+      <div class="controls">
+        <button class="btn" id="playAll">▶️ הקריאי לי את כל הסיפור</button>
+        <button class="btn secondary" id="stop">⏹ עצור</button>
+        <button class="btn secondary" id="toggleHe">🇮🇱 הצג את כל התרגום</button>
+        <div class="speed" id="speed">
+          <button data-r="0.6">🐢 לאט</button>
+          <button data-r="0.85" class="on">🙂 רגיל</button>
+        </div>
+      </div>
+    </div>
+    <div class="legend"><mark>מילה צהובה</mark> = מילה מהרשימה שלך. נסי ללחוץ על כולן!</div>
+
+    <div id="lines"></div>
+
+    <div class="section">
+      <h2>⭐ המילים שלי בסיפור <span class="progress" id="progress"></span></h2>
+      <button class="btn secondary filter-btn" id="chipFilter">🎮 הראי רק את המילים מהמשחק</button>
+      <div class="bar"><div id="barFill"></div></div>
+      <div class="chips" id="chips"></div>
+    </div>
+
+    <div class="section">
+      <h2>🎮 משחק: התאימי מילה לתרגום <button class="btn secondary" id="restart">🔄 לשחק מחדש</button></h2>
+      <div class="game">
+        <p>לחצי על מילה באנגלית ואז על התרגום שלה בעברית.
+          <button class="hint-link" id="hint">💡 צריכה עזרה? לחצי כאן</button></p>
+        <div class="cols">
+          <div class="col" id="colEn"></div>
+          <div class="col" id="colHe"></div>
+        </div>
+        <div class="win" id="win">
+          <div>🏆 כל הכבוד אור!</div>
+          <button class="btn" id="again">🔄 עוד סיבוב עם מילים אחרות</button>
+        </div>
+        <div class="score" id="score"></div>
+      </div>
+    </div>
+  </section>
+  <p class="note" id="totalNote"></p>
+  <p class="note" id="voiceNote"></p>
+</main>
+
+<div class="pop" id="pop">
+  <div class="p-en" id="pEn"></div>
+  <div class="p-he" id="pHe"></div>
+  <div class="p-base" id="pBase"></div>
+  <div id="pStar"></div>
+  <div class="p-btns">
+    <button id="pSay">🔊 אנגלית</button>
+    <button id="pSayHe">🔊 עברית</button>
+  </div>
+</div>
+
+<script>
+/* ===== רשימת המילים מהדף של אור ===== */
+const TARGET = ["a/an","address","a lot of","afraid","afternoon","airplane","apple","April","August","baby","bake","ball","banana","bathroom","beach","beautiful","because","bedroom","behind","best","birthday","black","blue","boat","book","boots","bread","breakfast","bring","brother","brown","buy","by","cake","can","car","chair","change","cheese","chicken","child","chocolate","city","classroom","clean","close","clothes","cloud/y","coat","coffee","cold","color","come","cookie","cool","cow","date","day","December","dinner","doctor","dollar","door","down","dress","drink","drive","ear","eat","eight","eighteen","eighty","elephant","eleven","every","eye","face","fall","family","father","favorite","February","feel","feet","fifteen","fifty","find","fish","five","flower","fly","food","forty","four","fourteen","Friday","from","fruit","fun","game","garden","girl","good","grade","grandmother","grandfather","gray","green","hair","happy","have","his","holiday","home","hospital","house","hundred","hungry","in","Israel","it","jacket","January","juice","July","jump","June","kitchen","late","letter","like","listen","live","long","look","lunch","make","March","market","May","meat","Monday","monkey","month","more","morning","mother","mouth","my","name","near","need","new","nice","nine","nineteen","ninety","nose","November","now","October","old","on","one","online","open","or","orange","outside","park","party","people","photograph/photo","picture","pink","pizza","place","play","please","point","police","pupil","queen","quiet","rain/y","read","restaurant","room","rule","same","sandwich","Saturday","say","school","see","September","seven","seventeen","seventy","share","she","shirt","shoe","shop","short","show","sign","sixteen","sixty","size","sky","small","smile","snake","snow","spring","start","store","street","Sunday","sunny","summer","surprise","sweater","table","take","tall","tea","teacher","teeth","telephone/phone","television","the","there","think","thirsty","thirteen","thirty","this","Thursday","time","to","today","tomorrow","too","town","train","travel","tree","Tuesday","twelve","twenty","two","umbrella","under","vegetable","wait","wake up","walk","want","warm","wash","we","weather","wear","Wednesday","week","wet","what","when","where","which","white","who","why","window","wind/y","winter","with","write","year","yellow","yesterday","your","zoo"];
+const TARGET_BY_LC = Object.fromEntries(TARGET.map(t => [t.toLowerCase(), t]));
+
+/*DATA-START*/
+/* ===== מילון =====
+   "מילה":"תרגום"          → מילה מהרשימה אם היא כתובה כך ברשימה
+   "מילה":["תרגום","בסיס"] → צורה אחרת של מילה מהרשימה (cookies → cookie)
+   "מילה":["תרגום",null]   → מילה שלא מהרשימה */
+const DICT = {
+  // מילים קטנות ונפוצות
+  "a":["(לפני שם עצם — אחד)","a/an"], "an":["(לפני שם עצם — אחד)","a/an"], "the":"הַ־",
+  "and":"וְ־ / וגם", "is":"הוא / היא / זה (is)", "it":"זה", "i":"אני", "am":"(אני) — am",
+  "are":"הם / אנחנו / אתם (are)", "was":"היה / הייתה (was)", "be":"להיות", "do":"(מילת שאלה) / לעשות",
+  "my":"שלי", "in":"בְּ־ / בתוך", "on":"על / בְּ־", "at":"בְּ־ / ליד", "to":"אל / לְ־", "of":"של",
+  "for":"בשביל / לְ־", "we":"אנחנו", "you":"אתה / את / אתם", "your":"שלך", "she":"היא", "he":"הוא",
+  "they":"הם / הן", "me":"לי / אותי", "our":"שלנו", "his":"שלו", "him":"לו / אותו", "them":"אותם / אותן",
+  "its":"שלו / שלה (של חיה או חפץ)", "there":"שם (there is = יש)", "this":"זה / זאת", "so":"אז / כל כך",
+  "not":"לא", "no":"אין / לא", "but":"אבל", "then":"אחר כך / ואז", "first":"קודם / ראשון", "very":"מאוד",
+  "too":"גם", "a lot of":"הרבה", "lot":["הרבה (a lot of)",null], "all":"כולם / כל", "some":"כמה / קצת",
+  "here":"הנה / כאן", "how":"איך / כמה", "again":"שוב", "together":"ביחד", "about":"על (נושא)",
+  "after":"אחרי", "or":"או", "what":"מה", "when":"מתי / כש־", "where":"איפה", "which":"איזה / איזו",
+  "who":"מי", "why":"למה", "because":"כי / בגלל ש־", "with":"עם", "from":"מ־ / מן", "by":"ב־ (ברכבת) / ליד",
+  "under":"מתחת לְ־", "behind":"מאחורי", "near":"ליד / קרוב", "outside":"בחוץ / החוצה", "down":"למטה",
+  "now":"עכשיו", "today":"היום", "tomorrow":"מחר", "yesterday":"אתמול", "every":"כל", "more":"עוד / יותר",
+  "same":"אותו / אותה (דבר)", "can":"יכול / יכולה", "please":"בבקשה", "thank":"תודה (thank you)",
+  "everyone":"כולם / כל אחד", "nobody":"אף אחד", "o'clock":"(השעה) — בשעה",
+  // פעלים
+  "wake up":"להתעורר", "go":"הולכים / ללכת", "wash":"לשטוף", "clean":"לנקות / נקי", "brush":"להבריש / לסרק",
+  "open":"לפתוח / פתוח", "close":"לסגור", "wear":"ללבוש", "sits":["יושב / יושבת",null], "sit":["לשבת",null],
+  "have":"יש לנו / יש לי", "has":["יש לו / יש לה","have"], "drinks":["שותה","drink"], "says":["אומר / אומרת","say"],
+  "say":"להגיד / אומרים", "look":"להסתכל / תסתכלי", "looks":["מסתכלת / מסתכל","look"], "take":"לקחת",
+  "walk":"ללכת ברגל", "love":"אוהבת / לאהוב", "start":"להתחיל", "read":"לקרוא", "write":"לכתוב",
+  "listen":"להקשיב / תקשיבו", "point":"להצביע", "points":["מצביעה / מצביע","point"], "think":"לחשוב / חושבת",
+  "rains":["יורד גשם","rain/y"], "swim":"לשחות", "fall":"סתיו / ליפול", "falls":["נופל / נופלת","fall"],
+  "travels":["נוסעת / נוסע","travel"], "travel":"לנסוע / לטייל", "see":"לראות / רואים", "jump":"לקפוץ",
+  "eat":"לאכול / אוכלים", "hurt":"כואב / כואבות", "hurts":["נפגע / כואב לו",null], "want":"לרצות / רוצה",
+  "wants":["רוצה","want"], "come":"לבוא / באים", "need":"צריך / צריכה", "buys":["קונה","buy"], "buy":"לקנות",
+  "find":"למצוא / מוצאת", "like":"אוהב / כמו", "count":"לספור", "drive":"לנהוג", "live":"לחיות / לגור",
+  "lives":["גרה / גר","live"], "fly":"לטוס / לעוף", "helps":["עוזר / עוזרת",null], "help":"לעזור",
+  "bring":"להביא / מביאה", "ask":"לשאול / שואלת", "calls":["מתקשרת / מתקשר",null], "call":"להתקשר / לקרוא",
+  "answers":["עונה",null], "share":"לשתף", "wait":"לחכות / חכו", "knocks":["דופקת (על הדלת)",null],
+  "smile":"לחייך / חיוך", "smiles":["מחייכת / מחייך","smile"], "bake":"לאפות", "makes":["מכין / מכינה","make"],
+  "change":"להחליף / לשנות", "turn off":"לכבות", "turn":["לסובב (turn off = לכבות)",null], "off":["כבוי (turn off = לכבות)",null],
+  "feels":["מרגישה / מרגיש","feel"], "play":"לשחק / משחקים",
+  // שמות עצם ותארים
+  "sunday":"יום ראשון", "monday":"יום שני", "tuesday":"יום שלישי", "wednesday":"יום רביעי",
+  "thursday":"יום חמישי", "friday":"יום שישי", "morning":"בוקר", "afternoon":"אחר הצהריים",
+  "evening":["ערב",null], "night":["לילה / ערב",null], "day":"יום", "week":"שבוע", "month":"חודש",
+  "months":["חודשים","month"], "year":"שנה", "time":"זמן / שעה", "date":"תאריך", "hour":["שעה",null],
+  "seven":"שבע", "eight":"שמונה", "bedroom":"חדר שינה", "bathroom":"חדר אמבטיה", "face":"פנים",
+  "teeth":"שיניים", "hair":"שיער", "window":"חלון", "weather":"מזג אוויר", "cold":"קר", "cloudy":["מעונן","cloud/y"],
+  "clouds":["עננים","cloud/y"], "long":"ארוך / ארוכה", "shirt":"חולצה", "gray":"אפור", "sweater":"סוודר",
+  "jacket":"ז'קט / מעיל קצר", "black":"שחור", "boots":"מגפיים", "kitchen":"מטבח", "family":"משפחה",
+  "table":"שולחן", "breakfast":"ארוחת בוקר", "bread":"לחם", "cheese":"גבינה", "apple":"תפוח", "apples":["תפוחים","apple"],
+  "father":"אבא", "mother":"אמא", "grandfather":"סבא", "grandmother":"סבתא", "grandma":["סבתא (בקיצור)","grandmother"],
+  "grandpa":["סבא (בקיצור)","grandfather"], "coffee":"קפה", "tea":"תה", "baby":"תינוק / תינוקת", "small":"קטן / קטנה",
+  "chair":"כיסא", "door":"דלת", "late":"מאוחר", "bag":["תיק",null], "school":"בית ספר", "pupil":"תלמיד / תלמידה",
+  "grade":"כיתה (שכבה) / ציון", "four":"ארבע", "name":"שם", "teacher":"מורה", "tall":"גבוה / גבוהה", "nice":"נחמד / נחמדה",
+  "sign":"שלט", "classroom":"כיתה (החדר)", "class":["כיתה",null], "quiet":"שקט", "story":["סיפור",null], "letter":"מכתב / אות",
+  "children":["ילדים","child"], "three":["שלוש",null], "pictures":["תמונות","picture"], "picture":"תמונה",
+  "animal":["חיה",null], "green":"ירוק / ירוקה", "one":"אחד / אחת", "snake":"נחש", "snakes":["נחשים","snake"],
+  "rule":"חוק / כלל", "phone":["טלפון","telephone/phone"], "fun":"כיף", "israel":"ישראל", "winter":"חורף",
+  "december":"דצמבר", "january":"ינואר", "february":"פברואר", "march":"מרץ", "april":"אפריל", "may":"מאי",
+  "june":"יוני", "july":"יולי", "august":"אוגוסט", "september":"ספטמבר", "october":"אוקטובר", "november":"נובמבר",
+  "rainy":["גשום","rain/y"], "windy":["יש רוח / סוער","wind/y"], "warm":"חם / חמים", "coat":"מעיל", "umbrella":"מטרייה",
+  "wet":"רטוב / רטובה", "places":["מקומות","place"], "north":["צפון",null], "snow":"שלג", "spring":"אביב",
+  "flowers":["פרחים","flower"], "everywhere":["בכל מקום",null], "summer":"קיץ", "sky":"שמיים", "blue":"כחול / כחולים",
+  "hot":["חם",null], "beach":"חוף ים", "sea":["ים",null], "cool":"קריר / מגניב", "yellow":"צהוב / צהובים",
+  "leaves":["עלים",null], "trees":["עצים","tree"], "tree":"עץ", "twelve":"שתים עשרה", "favorite":"אהוב / הכי אהוב",
+  "train":"רכבת", "zoo":"גן חיות", "elephant":"פיל", "big":["גדול / גדולה",null], "ears":["אוזניים","ear"],
+  "nose":"אף", "monkeys":["קופים","monkey"], "bananas":["בננות","banana"], "fish":"דג / דגים", "eyes":["עיניים","eye"],
+  "mouths":["פיות (פה)","mouth"], "farm":["חווה",null], "corner":["פינה",null], "brown":"חום / חומה", "cow":"פרה",
+  "glass":["זכוכית / כוס",null], "afraid":"מפחד / מפחדת", "friend":["חבר / חברה",null], "sandwiches":["כריכים","sandwich"],
+  "garden":"גן / גינה", "feet":"רגליים (כפות רגליים)", "happy":"שמח / שמחה", "next":["הבא / הבאה",null],
+  "market":"שוק", "vegetables":["ירקות","vegetable"], "meat":"בשר", "chicken":"עוף / תרנגולת", "dinner":"ארוחת ערב",
+  "people":"אנשים", "tomatoes":["עגבניות",null], "two":"שתיים / שניים", "dollar":"דולר", "man":["איש",null],
+  "shoe":"נעל", "shoes":["נעליים","shoe"], "shop":"חנות", "street":"רחוב", "new":"חדש / חדשות", "size":"מידה / גודל",
+  "thirty":"שלושים", "white":"לבן / לבנות", "hungry":"רעב / רעבה", "thirsty":"צמא / צמאה", "restaurant":"מסעדה",
+  "lunch":"ארוחת צהריים", "old":"זקן / ישן (years old = בגיל)", "sister":["אחות",null], "brother":"אח",
+  "fifteen":"חמש עשרה", "eighteen":"שמונה עשרה", "cousins":["בני דודים",null], "eleven":"אחת עשרה",
+  "thirteen":"שלוש עשרה", "fourteen":"ארבע עשרה", "sixteen":"שש עשרה", "seventeen":"שבע עשרה",
+  "nineteen":"תשע עשרה", "car":"מכונית", "aunt":["דודה",null], "twenty":"עשרים", "forty":"ארבעים", "fifty":"חמישים",
+  "sixty":"שישים", "seventy":"שבעים", "neighbor":["שכן / שכנה",null], "mr":["מר (לפני שם של גבר)",null], "eighty":"שמונים",
+  "great":["נהדר / גדול (great-grandmother = סבתא רבא)",null], "ninety":"תשעים", "town":"עיר קטנה", "hundred":"מאה",
+  "nine":"תשע", "numbers":["מספרים",null], "number":["מספר",null], "holiday":"חג / חופשה", "airplane":"מטוס",
+  "beautiful":"יפה / יפהפה", "city":"עיר", "boat":"סירה", "colorful":["צבעוני / צבעוניים",null], "hand":["יד",null],
+  "hospital":"בית חולים", "doctor":"רופא / רופאה", "problem":["בעיה",null], "notebook":["מחברת",null], "home":"בית / הביתה",
+  "dog":["כלב",null], "house":"בית", "bread":"לחם", "little":["קצת / קטן",null], "water":["מים",null],
+  "address":"כתובת", "collar":["קולר (רצועה על הצוואר)",null], "online":"ברשת / באינטרנט", "police":"משטרה",
+  "girl":"ילדה", "mom":["אמא",null], "dad":["אבא",null], "birthday":"יום הולדת", "five":"חמש", "store":"חנות",
+  "good":"טוב / טובה", "surprise":"הפתעה", "cake":"עוגה", "food":"אוכל", "clothes":"בגדים", "short":"קצר / קצרה",
+  "pink":"ורוד / ורודה", "dress":"שמלה", "television":"טלוויזיה", "living room":["סלון (חדר המגורים)","room"], "show":"להראות", "color":"צבע",
+  "dana":["דנה (שם)",null], "noa":["נועה (שם)",null], "yoni":["יוני (שם)",null], "dan":["דן (שם)",null], "tamar":["תמר (שם)",null],
+  "rina":["רינה (שם)",null], "moshe":["משה (שם)",null], "levi":["לוי (שם)",null], "sara":["שרה (שם)",null], "eilat":["אילת",null], "room":"חדר",
+  "queen":"מלכה", "game":"משחק", "normal":["רגיל",null], "special":["מיוחד",null]
+};
+
+/* ===== סיפורים =====
+   [מילים מרובות] = ביטוי שנחשב כמילה אחת */
+const STORIES = [
+  { emoji:"⏰", title:"A Busy Morning", titleHe:"בוקר עמוס", lines:[
+    ["🌅","It is Sunday morning. I [wake up] at seven in my bedroom.","היום יום ראשון בבוקר. אני מתעוררת בשבע בחדר השינה שלי."],
+    ["🪥","I go to the bathroom. I wash my face, clean my teeth, and brush my hair.","אני הולכת לחדר האמבטיה. אני שוטפת את הפנים, מנקה את השיניים ומסרקת את השיער."],
+    ["🪟","I open the window. The weather is cold and cloudy.","אני פותחת את החלון. מזג האוויר קר ומעונן."],
+    ["🧥","I wear a long shirt, a gray sweater, a jacket, and black boots.","אני לובשת חולצה ארוכה, סוודר אפור, ז'קט ומגפיים שחורים."],
+    ["🍳","In the kitchen, my family sits at the table.","במטבח, המשפחה שלי יושבת ליד השולחן."],
+    ["🍞","For breakfast, we have bread, cheese, and an apple.","לארוחת בוקר יש לנו לחם, גבינה ותפוח."],
+    ["☕","My father drinks coffee, and my grandfather drinks tea.","אבא שלי שותה קפה, וסבא שלי שותה תה."],
+    ["👶","The baby sits on a small chair near the door.","התינוק יושב על כיסא קטן ליד הדלת."],
+    ["⏰","\"It is late!\" says my mother. \"Look at the time!\"","\"מאוחר!\" אומרת אמא שלי. \"תסתכלי על השעה!\""],
+    ["🎒","I take my bag, close the door, and walk to school.","אני לוקחת את התיק, סוגרת את הדלת והולכת לבית הספר."]
+  ]},
+  { emoji:"🏫", title:"At School", titleHe:"בבית הספר", lines:[
+    ["👧","I am a pupil in grade four, and I love my school.","אני תלמידה בכיתה ד', ואני אוהבת את בית הספר שלי."],
+    ["👩‍🏫","The name of my teacher is Dana. She is tall and very nice.","השם של המורה שלי הוא דנה. היא גבוהה ונחמדה מאוד."],
+    ["🤫","There is a sign on the door of our classroom: \"Please be quiet!\"","יש שלט על הדלת של הכיתה שלנו: \"בבקשה לשמור על שקט!\""],
+    ["🕗","We start every day at eight o'clock.","אנחנו מתחילים כל יום בשעה שמונה."],
+    ["✏️","First, we read a story, and then we write a letter.","קודם אנחנו קוראים סיפור, ואז אנחנו כותבים מכתב."],
+    ["👂","\"Listen, children!\" says Dana. \"Here are three pictures.\"","\"תקשיבו, ילדים!\" אומרת דנה. \"הנה שלוש תמונות.\""],
+    ["🟢","\"Which animal is green? Who can show me?\"","\"איזו חיה היא ירוקה? מי יכול להראות לי?\""],
+    ["🐍","Noa points to a snake. \"This one! Its color is green!\"","נועה מצביעה על נחש. \"את זאת! הצבע שלו ירוק!\""],
+    ["📵","Our class rule is: no phone in the classroom!","החוק בכיתה שלנו: אין טלפון בכיתה!"],
+    ["😄","I think my school is [a lot of] fun!","אני חושבת שבית הספר שלי ממש כיף!"]
+  ]},
+  { emoji:"🌦️", title:"The Seasons in Israel", titleHe:"עונות השנה בישראל", lines:[
+    ["❄️","In Israel, winter is in December, January, and February.","בישראל, החורף הוא בדצמבר, בינואר ובפברואר."],
+    ["🌧️","In winter, it is cold, rainy, and windy, so I wear a warm coat.","בחורף קר, גשום ויש רוח, אז אני לובשת מעיל חם."],
+    ["☂️","When it rains, I take my umbrella, so I am not wet.","כשיורד גשם, אני לוקחת את המטרייה שלי, כדי שלא אהיה רטובה."],
+    ["⛄","In some places in the north, there is snow!","בכמה מקומות בצפון יש שלג!"],
+    ["🌸","Spring is in March, April, and May. There are flowers everywhere.","האביב הוא במרץ, באפריל ובמאי. יש פרחים בכל מקום."],
+    ["☀️","Summer is in June, July, and August. The sky is blue, and it is very hot.","הקיץ הוא ביוני, ביולי ובאוגוסט. השמיים כחולים, וחם מאוד."],
+    ["🏖️","In summer, we go to the beach and swim in the sea.","בקיץ אנחנו הולכים לחוף הים ושוחים בים."],
+    ["🍂","Fall is in September, October, and November.","הסתיו הוא בספטמבר, באוקטובר ובנובמבר."],
+    ["🍁","In fall, the weather is cool, and yellow leaves fall from the trees.","בסתיו מזג האוויר קריר, ועלים צהובים נופלים מהעצים."],
+    ["📅","There are twelve months in a year. Which month is your favorite?","יש שנים עשר חודשים בשנה. איזה חודש הכי אהוב עלייך?"]
+  ]},
+  { emoji:"🐘", title:"A Trip to the Zoo", titleHe:"טיול לגן החיות", lines:[
+    ["🚆","On Tuesday, our class travels by train to the zoo.","ביום שלישי, הכיתה שלנו נוסעת ברכבת לגן החיות."],
+    ["🐘","First, we see an elephant. It has big ears and a long nose.","קודם אנחנו רואים פיל. יש לו אוזניים גדולות ואף ארוך."],
+    ["🐒","The monkeys jump from tree to tree and eat bananas.","הקופים קופצים מעץ לעץ ואוכלים בננות."],
+    ["🐠","We look at the fish. They have big eyes and small mouths.","אנחנו מסתכלים על הדגים. יש להם עיניים גדולות ופיות קטנים."],
+    ["🐄","In the farm corner, there is a brown cow.","בפינת החווה יש פרה חומה."],
+    ["🐍","There is a big snake behind a glass window.","יש נחש גדול מאחורי חלון זכוכית."],
+    ["😱","\"I am afraid of snakes!\" says my friend Yoni.","\"אני מפחד מנחשים!\" אומר החבר שלי יוני."],
+    ["🥪","In the afternoon, we eat sandwiches in the garden.","אחר הצהריים אנחנו אוכלים כריכים בגינה."],
+    ["🦶","My feet hurt, but I am happy.","הרגליים שלי כואבות, אבל אני שמחה."],
+    ["💛","I love the zoo! I want to come again next month.","אני אוהבת את גן החיות! אני רוצה לבוא שוב בחודש הבא."]
+  ]},
+  { emoji:"🛒", title:"At the Market", titleHe:"בשוק", lines:[
+    ["👵","On Friday, I go to the market with my grandmother.","ביום שישי אני הולכת לשוק עם סבתא שלי."],
+    ["🥕","We need vegetables, meat, chicken, and fish for dinner.","אנחנו צריכות ירקות, בשר, עוף ודג לארוחת ערב."],
+    ["👥","There are [a lot of] people, and the market is not quiet!","יש הרבה אנשים, והשוק בכלל לא שקט!"],
+    ["🍅","\"Tomatoes! Two for one dollar!\" says a man.","\"עגבניות! שתיים בדולר אחד!\" אומר איש."],
+    ["🍏","Grandma buys green apples and yellow bananas.","סבתא קונה תפוחים ירוקים ובננות צהובות."],
+    ["👟","Then we go to a shoe shop on the same street.","אחר כך אנחנו הולכות לחנות נעליים באותו רחוב."],
+    ["📏","I need new shoes. My size is thirty-one.","אני צריכה נעליים חדשות. המידה שלי היא שלושים ואחת."],
+    ["🤍","I find nice white shoes, and Grandma buys them for me.","אני מוצאת נעליים לבנות ויפות, וסבתא קונה לי אותן."],
+    ["😋","Now I am hungry and thirsty.","עכשיו אני רעבה וצמאה."],
+    ["🍽️","We sit in a small restaurant and eat lunch together.","אנחנו יושבות במסעדה קטנה ואוכלות ארוחת צהריים ביחד."]
+  ]},
+  { emoji:"👨‍👩‍👧", title:"My Big Family", titleHe:"המשפחה הגדולה שלי", lines:[
+    ["🔢","My family is very big, and I like to count how old everyone is!","המשפחה שלי גדולה מאוד, ואני אוהבת לספור בן כמה כל אחד!"],
+    ["👫","My sister is fifteen, and my big brother is eighteen.","אחותי בת חמש עשרה, ואחי הגדול בן שמונה עשרה."],
+    ["🧒","My cousins are eleven, thirteen, fourteen, and sixteen.","בני הדודים שלי בני אחת עשרה, שלוש עשרה, ארבע עשרה ושש עשרה."],
+    ["🚗","Dan is seventeen, and Tamar is nineteen. They can drive a car!","דן בן שבע עשרה, ותמר בת תשע עשרה. הם יכולים לנהוג במכונית!"],
+    ["👩","My aunt is twenty, my mother is forty, and my father is fifty.","הדודה שלי בת עשרים, אמא שלי בת ארבעים, ואבא שלי בן חמישים."],
+    ["👴","Grandma Rina is sixty, and Grandpa Moshe is seventy.","סבתא רינה בת שישים, וסבא משה בן שבעים."],
+    ["🏠","Our old neighbor, Mr. Levi, is eighty.","השכן הזקן שלנו, מר לוי, בן שמונים."],
+    ["👵","My great-grandmother Sara is ninety! She lives in our town.","סבתא רבא שלי, שרה, בת תשעים! היא גרה בעיר שלנו."],
+    ["💯","She says, \"I want to live to one hundred!\"","היא אומרת: \"אני רוצה לחיות עד מאה!\""],
+    ["9️⃣","And me? I am nine, and I think numbers are fun!","ואני? אני בת תשע, ואני חושבת שמספרים זה כיף!"]
+  ]},
+  { emoji:"✈️", title:"A Holiday in Eilat", titleHe:"חופשה באילת", lines:[
+    ["🧳","Tomorrow is a holiday, and we travel to Eilat for a week.","מחר חג, ואנחנו נוסעים לאילת לשבוע."],
+    ["✈️","On Monday, we fly in an airplane. I sit near the window.","ביום שני אנחנו טסים במטוס. אני יושבת ליד החלון."],
+    ["☁️","I look outside and see white clouds in the sky.","אני מסתכלת החוצה ורואה עננים לבנים בשמיים."],
+    ["🌴","Eilat is a beautiful city by the sea.","אילת היא עיר יפה ליד הים."],
+    ["⛵","On Wednesday, we go on a boat and see [a lot of] colorful fish.","ביום רביעי אנחנו יוצאים בסירה ורואים הרבה דגים צבעוניים."],
+    ["🤕","On Thursday, my brother falls down and hurts his hand.","ביום חמישי אחי נופל ונפגע ביד שלו."],
+    ["🏥","We go to the hospital, and a nice doctor helps him.","אנחנו הולכים לבית החולים, ורופא נחמד עוזר לו."],
+    ["🩹","\"It is not a big problem,\" says the doctor with a smile.","\"זו לא בעיה גדולה,\" אומר הרופא בחיוך."],
+    ["📓","Every night, I write about the day in my notebook.","כל ערב אני כותבת על היום במחברת שלי."],
+    ["🏡","On Sunday, we come home. What a great holiday!","ביום ראשון אנחנו חוזרים הביתה. איזו חופשה נהדרת!"]
+  ]},
+  { emoji:"🐶", title:"The Lost Dog", titleHe:"הכלב האבוד", lines:[
+    ["🌙","One cold evening, I see a small brown dog outside our house.","ערב קר אחד, אני רואה כלב קטן וחום מחוץ לבית שלנו."],
+    ["🐶","It is wet and hungry. \"Where is your home?\" I ask.","הוא רטוב ורעב. \"איפה הבית שלך?\" אני שואלת."],
+    ["🍞","I bring it some bread and a little water.","אני מביאה לו קצת לחם וקצת מים."],
+    ["🏷️","There is an address and a phone number on its collar.","על הקולר שלו יש כתובת ומספר טלפון."],
+    ["📞","My mother calls the number, but nobody answers.","אמא שלי מתקשרת למספר, אבל אף אחד לא עונה."],
+    ["📱","We share a picture of the dog online.","אנחנו משתפים תמונה של הכלב ברשת."],
+    ["🚓","Then we call the police. \"Please wait at home,\" they say.","ואז אנחנו מתקשרים למשטרה. \"בבקשה חכו בבית,\" הם אומרים."],
+    ["🚪","After an hour, a girl knocks on our door.","אחרי שעה, ילדה דופקת על הדלת שלנו."],
+    ["🥰","\"My dog! Thank you!\" she says. She is so happy!","\"הכלב שלי! תודה!\" היא אומרת. היא כל כך שמחה!"],
+    ["😊","Why do I smile? Because I like to help!","למה אני מחייכת? כי אני אוהבת לעזור!"]
+  ]},
+  { emoji:"🎁", title:"A Surprise for Mom", titleHe:"הפתעה לאמא", lines:[
+    ["📅","What is the date today? It is Mom's birthday!","מה התאריך היום? זה יום ההולדת של אמא!"],
+    ["🕔","It is five o'clock, and Mom is at the store. This is a good time for a surprise!","השעה חמש, ואמא בחנות. זה זמן טוב להפתעה!"],
+    ["🎂","Dad and I bake a cake, and my brother makes more food.","אבא ואני אופים עוגה, ואחי מכין עוד אוכל."],
+    ["👗","I change my clothes and wear a short pink dress.","אני מחליפה בגדים ולובשת שמלה ורודה קצרה."],
+    ["📺","We [turn off] the television and sit down in the [living room].","אנחנו מכבים את הטלוויזיה ומתיישבים בסלון."],
+    ["🚪","Is this Mom at the door, or is it a neighbor?","זאת אמא בדלת, או שזה שכן?"],
+    ["🎉","It is Mom! \"Surprise!\" we all say.","זאת אמא! \"הפתעה!\" כולנו אומרים."],
+    ["👑","Mom smiles and feels like a queen!","אמא מחייכת ומרגישה כמו מלכה!"],
+    ["🎲","We eat good food and play a fun game together.","אנחנו אוכלים אוכל טוב ומשחקים ביחד במשחק כיף."],
+    ["💖","Yesterday was a normal day, but today is a special day!","אתמול היה יום רגיל, אבל היום הוא יום מיוחד!"]
+  ]}
+];
+/*DATA-END*/
+
+// מילים שלא מתאימות למשחק ההתאמה (קשה לתרגם אותן לבד)
+const GAME_SKIP = new Set(["a/an","the","it","to","in","on","my","we","she","his","your","this","there","too","by","from","with","or","can","have","what","when","where","which","who","why","under","near","behind","down","every","more","same","because","a lot of","now","say","look","take","make","come","see","like","one","fall","old"]);
+
+/* ===== עזר ===== */
+function lookup(word){
+  const w = word.toLowerCase();
+  let v = DICT[w];
+  if (v === undefined && /'s$/.test(w)){            // Mom's → של אמא
+    const b = lookup(w.slice(0, -2));
+    if (b) return [b[0] + " — של", b[1]];
+  }
+  if (v === undefined) return null;
+  if (typeof v === "string") return [v, TARGET_BY_LC[w] || null];
+  return v;
+}
+const clean = s => s.replace(/\s*\(.*?\)/g, "").trim();
+const shuffle = a => { for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+/* ===== מצב ===== */
+let cur = 0, rate = 0.85, playing = false, showAllHe = false, popWord = null;
+let seen = new Set();
+try { seen = new Set(JSON.parse(localStorage.getItem("or-seen") || "[]")); } catch(e){}
+try { cur = Math.min(+localStorage.getItem(location.pathname + ":story") || 0, STORIES.length - 1); } catch(e){}
+const saveSeen = () => { try { localStorage.setItem("or-seen", JSON.stringify([...seen])); } catch(e){} };
+
+/* ===== קולות ===== */
+let enVoice = null, heVoice = null;
+function pickVoices(){
+  const vs = speechSynthesis.getVoices();
+  const en = vs.filter(v => /^en[-_]/i.test(v.lang));
+  enVoice = en.find(v => /natural|online/i.test(v.name) && /en[-_]US/i.test(v.lang))
+         || en.find(v => /en[-_]US/i.test(v.lang)) || en[0] || null;
+  const he = vs.filter(v => /^(he|iw)/i.test(v.lang));
+  heVoice = he.find(v => /natural|online/i.test(v.name)) || he[0] || null;
+  document.getElementById("voiceNote").textContent = heVoice ? "" :
+    "💡 לא נמצא קול בעברית במחשב — התרגום יוצג בכתב. בדפדפן Edge יש קול עברי מובנה.";
+}
+pickVoices();
+speechSynthesis.onvoiceschanged = pickVoices;
+
+// עוצר הקראה ומשחרר את מי שמחכה לה (גם בדפדפנים שלא מודיעים על ביטול)
+let curResolve = null;
+function hush(){ speechSynthesis.cancel(); if (curResolve){ const r = curResolve; curResolve = null; r(); } }
+function speak(text, lang, opts = {}){
+  return new Promise(res => {
+    let done = false;
+    const resolve = () => { if (!done){ done = true; if (curResolve === resolve) curResolve = null; res(); } };
+    curResolve = resolve;
+    const u = new SpeechSynthesisUtterance(text);
+    if (lang === "he"){ if (!heVoice){ resolve(); return; } u.voice = heVoice; u.lang = heVoice.lang; u.rate = 0.95; }
+    else { if (enVoice) u.voice = enVoice; u.lang = enVoice ? enVoice.lang : "en-US"; u.rate = opts.rate || rate; }
+    if (opts.onboundary) u.onboundary = opts.onboundary;
+    u.onend = u.onerror = () => resolve();
+    speechSynthesis.speak(u);
+  });
+}
+// paused = ההקראה נעצרה כי לחצו על מילה; ממשיכה כשסוגרים את החלונית
+let paused = false, resumeFn = null;
+function resume(){ if (resumeFn){ const r = resumeFn; resumeFn = null; r(); } }
+function stopAll(){
+  playing = false; paused = false; resume(); hush();
+  document.querySelectorAll(".line.active").forEach(l => l.classList.remove("active"));
+  document.querySelectorAll(".w.reading").forEach(w => w.classList.remove("reading"));
+}
+
+/* ===== בניית הסיפור ===== */
+function buildLine(text){
+  const frag = document.createDocumentFragment(); const tokens = []; let txt = "";
+  const re = /\[([^\]]+)\]|[A-Za-z']+|[^A-Za-z'\[]+/g; let m;
+  while ((m = re.exec(text))){
+    const word = m[1] || (/^[A-Za-z']+$/.test(m[0]) ? m[0] : null);
+    if (word){
+      const s = document.createElement("span"); s.className = "w"; s.textContent = word;
+      const e = lookup(word);
+      if (e && e[1]){ s.classList.add("t"); s.dataset.base = e[1]; if (seen.has(e[1])) s.classList.add("seen"); }
+      s.dataset.word = word;
+      tokens.push({el:s, start:txt.length}); frag.appendChild(s); txt += word;
+    } else { frag.appendChild(document.createTextNode(m[0])); txt += m[0]; }
+  }
+  return {frag, txt, tokens};
+}
+
+function render(){
+  stopAll(); hidePop();
+  try { localStorage.setItem(location.pathname + ":story", cur); } catch(e){}
+  const st = STORIES[cur];
+  document.getElementById("title").textContent = st.title;
+  document.getElementById("titleHe").textContent = st.titleHe;
+  const box = document.getElementById("lines"); box.innerHTML = "";
+  st._lines = st.lines.map(([emoji, en, he]) => {
+    const row = document.createElement("div"); row.className = "line";
+    const btns = document.createElement("div"); btns.className = "line-btns";
+    const bS = document.createElement("button"); bS.className = "icon-btn speak"; bS.textContent = "🔊"; bS.title = "הקריאי לי";
+    const bT = document.createElement("button"); bT.className = "icon-btn"; bT.textContent = "🇮🇱"; bT.title = "תרגום";
+    btns.append(bS, bT);
+    const body = document.createElement("div"); body.className = "line-body";
+    const enEl = document.createElement("div"); enEl.className = "en";
+    const em = document.createElement("span"); em.className = "emoji"; em.textContent = emoji;
+    const b = buildLine(en); enEl.append(em, b.frag);
+    const heEl = document.createElement("div"); heEl.className = "he" + (showAllHe ? " show" : ""); heEl.textContent = he;
+    body.append(enEl, heEl); row.append(btns, body); box.appendChild(row);
+    const L = {row, heEl, txt:b.txt, tokens:b.tokens, he};
+    bS.onclick = () => playLines([L]);
+    bT.onclick = () => heEl.classList.toggle("show");
+    return L;
+  });
+  renderChips(); renderTabs(); newGame();
+}
+
+async function playLines(lines){
+  stopAll(); playing = true;
+  for (let i = 0; i < lines.length && playing; ){
+    if (paused) await new Promise(r => resumeFn = r);
+    if (!playing) break;
+    if (await readLine(lines[i])){             // נקטעה באמצע? קוראים שוב את אותה שורה
+      i++;
+      if (i < lines.length) await new Promise(r => setTimeout(r, 350));
+    }
+  }
+  playing = false;
+}
+
+async function readLine(L){
+  L.row.classList.add("active");
+  L.row.scrollIntoView({behavior:"smooth", block:"center"});
+  await speak(L.txt, "en", { onboundary: ev => {
+    if (ev.name && ev.name !== "word") return;
+    let hit = null; for (const t of L.tokens) if (t.start <= ev.charIndex) hit = t;
+    L.tokens.forEach(t => t.el.classList.toggle("reading", t === hit));
+  }});
+  L.tokens.forEach(t => t.el.classList.remove("reading"));
+  if (!playing || paused) { L.row.classList.remove("active"); return false; }
+  L.heEl.classList.add("show");
+  await speak(L.he, "he");
+  L.row.classList.remove("active");
+  return playing && !paused;
+}
+
+document.getElementById("playAll").onclick = () => playLines(STORIES[cur]._lines);
+document.getElementById("stop").onclick = stopAll;
+document.getElementById("toggleHe").onclick = (e) => {
+  showAllHe = !showAllHe;
+  document.querySelectorAll(".he").forEach(h => h.classList.toggle("show", showAllHe));
+  e.currentTarget.textContent = showAllHe ? "🙈 הסתר את התרגום" : "🇮🇱 הצג את כל התרגום";
+};
+document.querySelectorAll("#speed button").forEach(b => b.onclick = () => {
+  rate = +b.dataset.r; document.querySelectorAll("#speed button").forEach(x => x.classList.toggle("on", x === b));
+});
+
+/* ===== חלונית מילה ===== */
+const pop = document.getElementById("pop");
+function showPop(el){
+  const word = el.dataset.word; const e = lookup(word);
+  popWord = word;
+  document.getElementById("pEn").textContent = word;
+  document.getElementById("pHe").textContent = e ? e[0] : "—";
+  const base = e && e[1];
+  document.getElementById("pBase").textContent = base && base.toLowerCase() !== word.toLowerCase() ? "מהמילה: " + base : "";
+  document.getElementById("pStar").innerHTML = base ? '<span class="p-star">⭐ מילה מהרשימה שלי</span>' : "";
+  document.getElementById("pSayHe").style.display = heVoice && e ? "" : "none";
+  pop.classList.add("show");
+  const r = el.getBoundingClientRect(); const pw = pop.offsetWidth;
+  let left = r.left + r.width/2 - pw/2 + scrollX;
+  left = Math.max(8 + scrollX, Math.min(left, scrollX + document.documentElement.clientWidth - pw - 8));
+  pop.style.left = left + "px"; pop.style.top = (r.bottom + scrollY + 8) + "px";
+  if (base) markSeen(base);
+  if (playing) paused = true;
+  hush();
+  speak(word, "en", {rate: Math.min(rate, 0.8)});
+}
+function hidePop(){
+  if (!pop.classList.contains("show")) return;
+  pop.classList.remove("show");
+  if (paused){ paused = false; hush(); resume(); }
+}
+document.getElementById("pSay").onclick = (e) => { e.stopPropagation(); hush(); speak(popWord, "en", {rate:0.7}); };
+document.getElementById("pSayHe").onclick = (e) => { e.stopPropagation(); const x = lookup(popWord); hush(); if (x) speak(clean(x[0]), "he"); };
+document.addEventListener("click", (e) => {
+  const w = e.target.closest(".w");
+  if (w) { showPop(w); return; }
+  if (!e.target.closest(".pop")) hidePop();
+});
+window.addEventListener("resize", hidePop);
+
+/* ===== המילים שלי ===== */
+function storyTargets(i = cur){
+  // base → {word, he} לפי ההופעה הראשונה בסיפור
+  const map = new Map();
+  for (const [, en] of STORIES[i].lines){
+    const re = /\[([^\]]+)\]|[A-Za-z']+/g; let m;
+    while ((m = re.exec(en))){
+      const word = m[1] || m[0]; const e = lookup(word);
+      if (e && e[1] && !map.has(e[1])) map.set(e[1], {word, he: clean(e[0])});
+    }
+  }
+  return map;
+}
+// chipFilter = להציג רק את המילים שבסיבוב המשחק הנוכחי (עזרה במשחק)
+let chipFilter = false;
+function renderChips(){
+  const box = document.getElementById("chips"); box.innerHTML = "";
+  const fb = document.getElementById("chipFilter");
+  fb.classList.toggle("on", chipFilter);
+  fb.textContent = chipFilter ? "✖ ביטול — חזרה לכל המילים" : "🎮 הראי רק את המילים מהמשחק";
+  document.getElementById("hint").textContent = chipFilter ? "✖ ביטול העזרה" : "💡 צריכה עזרה? לחצי כאן";
+  for (const [base, {word, he}] of storyTargets()){
+    if (chipFilter && !gameRound.includes(base)) continue;
+    const c = document.createElement("button"); c.className = "chip" + (seen.has(base) ? " seen" : ""); c.dataset.base = base;
+    c.innerHTML = "<b></b><span></span>"; c.querySelector("b").textContent = word; c.querySelector("span").textContent = he;
+    c.onclick = () => { hush(); speak(word, "en", {rate:0.75}); markSeen(base); };
+    box.appendChild(c);
+  }
+  updateProgress();
+}
+function markSeen(base){
+  seen.add(base); saveSeen();
+  document.querySelectorAll(`[data-base="${CSS.escape(base)}"]`).forEach(el => el.classList.add("seen"));
+  updateProgress();
+}
+function updateProgress(){
+  const t = [...storyTargets().keys()]; const n = t.filter(b => seen.has(b)).length;
+  document.getElementById("progress").textContent = `${n} / ${t.length} מילים שלחצתי עליהן` + (n === t.length && n ? " 🏆 כל הכבוד!" : "");
+  document.getElementById("barFill").style.width = (t.length ? n / t.length * 100 : 0) + "%";
+  const total = TARGET.filter(b => seen.has(b)).length;
+  document.getElementById("totalNote").textContent = `⭐ בסך הכול הכרתי ${total} מתוך ${TARGET.length} המילים ברשימה`;
+  document.querySelectorAll(".tab").forEach((tab, i) => {
+    tab.classList.toggle("done", [...storyTargets(i).keys()].every(b => seen.has(b)));
+  });
+}
+
+function renderTabs(){
+  const nav = document.getElementById("tabs"); nav.innerHTML = "";
+  if (STORIES.length < 2) return;
+  STORIES.forEach((s, i) => {
+    const b = document.createElement("button"); b.className = "tab" + (i === cur ? " on" : "");
+    b.textContent = `${s.emoji} ${s.titleHe}`; b.onclick = () => { cur = i; render(); scrollTo({top:0, behavior:"smooth"}); };
+    nav.appendChild(b);
+  });
+  updateProgress();
+}
+
+/* ===== משחק התאמה ===== */
+let gameSel = null, gameLeft = 0, gameRound = [];
+function newGame(){
+  const all = [...storyTargets()].filter(([b]) => !GAME_SKIP.has(b));
+  // בלי שני תרגומים זהים באותו סיבוב
+  const pool = shuffle(all.filter(([b]) => !gameRound.includes(b)));
+  const pick = [], hes = new Set();
+  for (const p of pool.concat(shuffle(all))){
+    if (pick.length >= 6) break;
+    if (hes.has(p[1].he) || pick.some(x => x[0] === p[0])) continue;
+    pick.push(p); hes.add(p[1].he);
+  }
+  gameRound = pick.map(p => p[0]); gameLeft = pick.length; gameSel = null;
+  const cEn = document.getElementById("colEn"), cHe = document.getElementById("colHe");
+  cEn.innerHTML = ""; cHe.innerHTML = "";
+  document.getElementById("win").classList.remove("show");
+  document.getElementById("score").textContent = "";
+  const mk = (txt, key, side) => {
+    const b = document.createElement("button"); b.className = "card-btn" + (side === "en" ? " en-card" : "");
+    b.textContent = txt; b.dataset.key = key; b.dataset.side = side;
+    b.onclick = () => gameClick(b); return b;
+  };
+  shuffle([...pick]).forEach(([base, {word}]) => cEn.appendChild(mk(word, base, "en")));
+  shuffle([...pick]).forEach(([base, {he}]) => cHe.appendChild(mk(he, base, "he")));
+  renderChips();
+}
+function gameClick(b){
+  if (b.classList.contains("ok")) return;
+  if (b.dataset.side === "en"){ hush(); speak(b.textContent, "en", {rate:0.75}); }
+  if (!gameSel || gameSel.dataset.side === b.dataset.side){
+    if (gameSel) gameSel.classList.remove("sel");
+    gameSel = b; b.classList.add("sel"); return;
+  }
+  const a = gameSel; gameSel = null; a.classList.remove("sel");
+  if (a.dataset.key === b.dataset.key){
+    a.classList.add("ok"); b.classList.add("ok"); markSeen(a.dataset.key);
+    if (--gameLeft === 0){
+      document.getElementById("win").classList.add("show");
+      speak("Great job!", "en", {rate:0.85});
+    }
+  } else {
+    [a, b].forEach(x => { x.classList.remove("bad"); void x.offsetWidth; x.classList.add("bad"); setTimeout(() => x.classList.remove("bad"), 600); });
+  }
+}
+document.getElementById("again").onclick = newGame;
+document.getElementById("chipFilter").onclick = () => { chipFilter = !chipFilter; renderChips(); };
+document.getElementById("hint").onclick = () => {
+  chipFilter = !chipFilter; renderChips();
+  if (chipFilter) document.getElementById("chips").scrollIntoView({behavior:"smooth", block:"center"});
+};
+document.getElementById("restart").onclick = () => { hush(); newGame(); };
+
+render();
+</script>
+</body>
+</html>
