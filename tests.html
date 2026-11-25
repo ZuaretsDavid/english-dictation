@@ -20,6 +20,7 @@
   main{max-width:820px;margin:0 auto;padding:8px 16px 60px}
   .en{direction:ltr;font-family:"Andika",sans-serif}
   [hidden]{display:none !important}
+  body > .bb{position:sticky;top:0;z-index:50}
 
   .btn{border:none;border-radius:14px;padding:10px 16px;font:inherit;font-weight:700;cursor:pointer;background:var(--accent2);color:#fff;display:inline-flex;gap:6px;align-items:center;justify-content:center}
   .btn.secondary{background:#eef0f6;color:var(--ink)}
@@ -115,7 +116,7 @@
 <body>
 <nav class="bb" aria-label="ניווט ראשי">
   <a class="bb-brand" href="index.html" aria-label="unbox your English, לדף הבית"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="14" y="4" width="20" height="20" rx="5" fill="#0F766E" transform="rotate(-10 24 14)"/><text x="24" y="20" text-anchor="middle" font-family="Andika,Rubik,sans-serif" font-weight="700" font-size="15" fill="#fff" transform="rotate(-10 24 14)">A</text><path d="M6 22 L42 22 L39 44 L9 44 Z" fill="#E0A562"/><path d="M6 22 L2 15 M42 22 L46 15" stroke="#A8692E" stroke-width="3" stroke-linecap="round"/><rect x="21" y="22" width="6" height="22" fill="#F0C48A" opacity=".8"/></svg><span class="bb-txt"><b>unbox your English</b><small>לצאת מהקופסה עם יראת זוארץ</small></span></a>
-  <div class="bb-tabs"><a href="dictation.html">📝 הכתבה</a><a href="stories/index.html">📚 סיפורים</a><a href="tests.html" class="on">🎯 הכנה למבחן</a><span class="bb-ver" title="גרסה">v<!--VER-->2.1.0<!--/VER--></span></div>
+  <div class="bb-tabs"><a href="dictation.html">📝 הכתבה</a><a href="stories/index.html">📚 סיפורים</a><a href="tests.html" class="on">🎯 הכנה למבחן</a><span class="bb-ver" title="גרסה">v<!--VER-->2.1.1<!--/VER--></span></div>
 </nav>
 <header>
   <h1>🎯 הכנה למבחן</h1>
@@ -145,7 +146,7 @@
   <!-- ===== הסבר ===== -->
   <section id="ruleView" hidden>
     <div class="card rule">
-      <div class="bar-top"><h2 id="ruleTitle" style="margin:0"></h2><button class="btn secondary" data-home>🏠 חזרה</button></div>
+      <div class="bar-top"><h2 id="ruleTitle" style="margin:0"></h2><button class="btn secondary" data-home>↩ חזרה לנושאים</button></div>
       <p class="tip">💡 לחצי על דוגמה כדי לשמוע אותה</p>
       <div id="ruleBody"></div>
       <div class="center"><button class="btn big" id="ruleToPractice">🎮 עכשיו לתרגל!</button></div>
@@ -159,7 +160,7 @@
         <b id="quizLabel"></b>
         <div class="bar"><div id="quizBar"></div></div>
         <span id="quizCount"></span>
-        <button class="btn secondary" data-home>✖</button>
+        <button class="btn secondary" data-home>↩ לנושאים</button>
       </div>
       <div class="q-prompt" id="qPrompt"></div>
       <div class="q-text" id="qText"></div>
@@ -391,11 +392,23 @@ function chooseTest(){
          || sorted.find(x => daysLeft(x.date) >= 0) || sorted[sorted.length - 1];
   return t;
 }
+let homeScroll = 0;
 function show(id){
+  const fromHome = !$("home").hidden;
+  if (fromHome && id !== "home") homeScroll = scrollY;          // זוכרים איפה היינו ברשימת הנושאים
   ["home", "ruleView", "quizView", "resultView"].forEach(v => $(v).hidden = v !== id);
-  scrollTo({top:0, behavior:"smooth"});
+  if (id !== "home") scrollTo({top:0});
+  else if (!fromHome) requestAnimationFrame(() => scrollTo({top:homeScroll}));
 }
-document.querySelectorAll("[data-home]").forEach(b => b.onclick = () => { speechSynthesis.cancel(); renderHome(); });
+// כל מסך פנימי (הסבר, תרגול, תוצאות) הוא רשומה אחת בהיסטוריה, כך ש"אחורה" חוזר לנושאים ולא יוצא מהעמוד
+function enterScreen(){ if (!(history.state && history.state.v === "sub")) history.pushState({v:"sub"}, ""); }
+function goHome(){
+  speechSynthesis.cancel();
+  if (history.state && history.state.v === "sub") history.back();   // popstate יחזיר לנושאים
+  else renderHome();
+}
+window.addEventListener("popstate", () => { speechSynthesis.cancel(); renderHome(); });
+document.querySelectorAll("[data-home]").forEach(b => b.onclick = goHome);
 
 /* ===== מסך ראשי ===== */
 function renderHome(){
@@ -442,7 +455,7 @@ $("mockBtn").onclick = () => startMock();
 /* ===== הסבר ===== */
 let ruleTopic = null;
 function showRule(t){
-  ruleTopic = t; show("ruleView");
+  ruleTopic = t; enterScreen(); show("ruleView");
   $("ruleTitle").textContent = `${t.emoji} ${t.en} — ${t.he}`;
   $("ruleBody").innerHTML = t.rule;
 }
@@ -455,14 +468,14 @@ function startPractice(topic, list){
   const qs = list || shuffle(pool(topic)).slice(0, 10);
   run = { mode:"practice", topic, label: topic ? `${topic.emoji} ${topic.en}` : "🔁 הטעויות שלי",
           queue: qs.map(q => ({...q})), total: qs.length, done: 0, wrong: [], retried: new Set() };
-  show("quizView"); showQ();
+  enterScreen(); show("quizView"); showQ();
 }
 function startMock(){
   const pools = test.topics.map(t => shuffle(pool(t)));
   const qs = [];
   for (let i = 0; qs.length < 20 && i < 50; i++){ const p = pools[i % pools.length]; if (p.length) qs.push(p.pop()); }
   run = { mode:"mock", topic:null, label:"🏁 מבחן ניסיון", queue: shuffle(qs), total: qs.length, done: 0, wrong: [], answers: [] };
-  show("quizView"); showQ();
+  enterScreen(); show("quizView"); showQ();
 }
 
 let cur = null, locked = false;
@@ -585,6 +598,7 @@ function finish(){
 
 /* ===== התחלה ===== */
 test = chooseTest();
+if (history.state && history.state.v === "sub") history.replaceState(null, "");
 renderHome();
 </script>
 </body>
