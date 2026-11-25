@@ -19,7 +19,7 @@ main{flex:1;max-width:880px;width:100%;margin:0 auto;padding:28px 18px 40px;disp
 h1{font-family:Andika,sans-serif;direction:ltr;font-size:clamp(40px,9vw,64px);margin:6px 0 0;color:var(--teal);letter-spacing:.5px;line-height:1.05}
 h1 span{color:var(--coral)}
 .sub{font-size:clamp(23px,5vw,30px);color:var(--kraft-d);font-weight:700;margin:10px 0 0}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;width:100%}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;width:100%}
 .card{display:block;text-decoration:none;color:inherit;background:#fff;border-radius:26px;padding:26px 22px;box-shadow:0 8px 0 rgba(43,45,66,.08),0 10px 28px rgba(43,45,66,.08);border:3px solid transparent;transition:transform .15s,border-color .15s}
 .card:hover{transform:translateY(-4px)}
 .card:active{transform:translateY(2px)}
@@ -32,7 +32,9 @@ h1 span{color:var(--coral)}
 .card.story{border-color:var(--kraft-l)} .card.story h2{color:var(--kraft-d)}
 .card.story:hover{border-color:var(--kraft)}
 .go{display:inline-block;margin-top:14px;font-weight:800;font-size:21px;border-radius:999px;padding:8px 18px;color:#fff}
-.dict .go{background:var(--teal)} .story .go{background:var(--kraft-d)}
+.card.test{border-color:#E9DDFB} .card.test h2{color:var(--violet)}
+.card.test:hover{border-color:var(--violet)}
+.dict .go{background:var(--teal)} .story .go{background:var(--kraft-d)} .test .go{background:var(--violet)}
 footer{text-align:center;color:var(--muted);font-size:17px;padding:16px}
 @media (prefers-reduced-motion:reduce){.logo,.logo .cube{animation:none}}
 </style>
@@ -61,8 +63,14 @@ footer{text-align:center;color:var(--muted);font-size:17px;padding:16px}
       <p>סיפורים קצרים באנגלית עם הקראה ותרגום לכל מילה. אפשר גם <b>לצלם דף מהספר</b> ולקבל ממנו סיפור.</p>
       <span class="go">לסיפורים ←</span>
     </a>
+    <a class="card test" href="tests.html">
+      <div class="ico">🎯</div>
+      <h2>הכנה למבחן</h2>
+      <p>בוחרים את תאריך המבחן ומתרגלים את כל הנושאים: הסבר, תרגול ומבחן ניסיון עם ציון.</p>
+      <span class="go">בואי נתכונן ←</span>
+    </a>
   </nav>
 </main>
-<footer>ההתקדמות נשמרת בדפדפן של המכשיר הזה, בלי הרשמה. · גרסה <!--VER-->2.0.0<!--/VER--></footer>
+<footer>ההתקדמות נשמרת בדפדפן של המכשיר הזה, בלי הרשמה. · גרסה <!--VER-->2.1.0<!--/VER--></footer>
 </body>
 </html>
