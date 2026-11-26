@@ -81,10 +81,24 @@
   .write{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
   .write input{font-family:"Andika",sans-serif;font-size:26px;direction:ltr;padding:8px 14px;border:3px solid #cfd8e3;border-radius:14px;width:240px;text-align:center}
   .write input.ok{border-color:var(--ok);color:var(--ok)} .write input.bad{border-color:var(--bad);color:var(--bad)}
+  .wbank{border:2px dashed #E0A562;background:#fff8ec;border-radius:14px;padding:8px 12px;margin:0 auto 14px;max-width:640px;text-align:center}
+  .wbank .wb-title{font-size:15px;color:#A8692E;font-weight:700}
+  .wbank .wb-words{font-size:22px;line-height:1.6}
+  .b-line{min-height:64px;border-bottom:3px solid var(--ink);display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:flex-end;padding:6px;margin:0 auto 16px;max-width:700px;direction:ltr}
+  .b-line.ok{border-color:var(--ok)} .b-line.bad{border-color:var(--bad)}
+  .b-pool{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;min-height:56px;margin-bottom:14px;direction:ltr}
+  .tile{font-family:"Andika",sans-serif;font-size:24px;border:3px solid #cfd8e3;background:#fff;color:var(--ink);border-radius:12px;padding:6px 14px;cursor:pointer}
+  .b-line .tile{border-color:var(--accent2);background:#e8f7fd}
+  .btn:disabled{opacity:.45;cursor:default}
+  .btn.review-btn{background:var(--purple);margin-top:12px}
   .feedback{min-height:30px;margin-top:16px;text-align:center;font-size:19px}
   .feedback .yes{color:var(--ok);font-weight:700;font-size:22px}
   .feedback .no{color:var(--bad);font-weight:700}
   .feedback .why{display:block;margin-top:6px;color:var(--ink)}
+  .tr{display:block;margin-top:6px;color:#1e3a8a;font-weight:700;font-size:20px}
+  .q-tr{text-align:center;color:#1e3a8a;font-weight:700;font-size:26px;margin:-8px 0 16px}
+  .mist .tr{font-size:18px;margin-top:2px}
+  @media (max-width:560px){.q-tr{font-size:22px}}
   .next-row{text-align:center;margin-top:14px}
 
   /* תוצאות */
@@ -111,12 +125,27 @@
   .bb-tabs a{text-decoration:none;font-weight:700;font-size:18px;padding:7px 14px;border-radius:999px;color:#0F766E;border:2px solid #0F766E;background:#fff}
   .bb-tabs a.on{background:#0F766E;color:#fff}
   .bb-ver{align-self:center;font-size:12px;color:#9a9cad;direction:ltr;margin-inline-start:4px}
+/*KBD-CSS-START*/
+.okbd-tog{border:2px solid #0F766E;background:#fff;color:#0F766E;border-radius:12px;font:700 17px Rubik,system-ui,sans-serif;padding:8px 12px;cursor:pointer;margin:8px 4px 0;vertical-align:middle}
+.okbd-tog.on{background:#0F766E;color:#fff}
+.okbd{position:fixed;left:0;right:0;bottom:0;z-index:200;background:#e9edf3;border-top:3px solid #E0A562;padding:8px 4px calc(8px + env(safe-area-inset-bottom));direction:ltr;user-select:none;-webkit-user-select:none;touch-action:manipulation;box-shadow:0 -6px 20px rgba(43,45,66,.15)}
+.okbd[hidden]{display:none}
+.okbd-row{display:flex;justify-content:center;gap:5px;margin:5px auto;max-width:760px}
+.okbd button{flex:1 1 0;max-width:68px;min-width:0;height:54px;border:none;border-radius:10px;background:#fff;color:#2b2d42;font:400 30px Andika,sans-serif;box-shadow:0 2px 0 #b9c0cc;cursor:pointer;padding:0;touch-action:manipulation}
+.okbd button:active,.okbd button.down{background:#ffe066;transform:translateY(2px);box-shadow:none}
+.okbd .wide{max-width:none;flex:5 1 0}
+.okbd .mid{max-width:110px;flex:1.6 1 0;font:700 20px Rubik,system-ui,sans-serif}
+.okbd .go{background:#2ec4b6;color:#fff}
+.okbd .x{background:#eef0f6;color:#7a7d92}
+body.okbd-open{padding-bottom:260px}
+@media (max-width:560px){.okbd button{height:48px;font-size:24px}.okbd-row{gap:3px}}
+/*KBD-CSS-END*/
 </style>
 </head>
 <body>
 <nav class="bb" aria-label="ניווט ראשי">
   <a class="bb-brand" href="index.html" aria-label="unbox your English, לדף הבית"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="14" y="4" width="20" height="20" rx="5" fill="#0F766E" transform="rotate(-10 24 14)"/><text x="24" y="20" text-anchor="middle" font-family="Andika,Rubik,sans-serif" font-weight="700" font-size="15" fill="#fff" transform="rotate(-10 24 14)">A</text><path d="M6 22 L42 22 L39 44 L9 44 Z" fill="#E0A562"/><path d="M6 22 L2 15 M42 22 L46 15" stroke="#A8692E" stroke-width="3" stroke-linecap="round"/><rect x="21" y="22" width="6" height="22" fill="#F0C48A" opacity=".8"/></svg><span class="bb-txt"><b>unbox your English</b><small>לצאת מהקופסה עם יראת זוארץ</small></span></a>
-  <div class="bb-tabs"><a href="dictation.html">📝 הכתבה</a><a href="stories/index.html">📚 סיפורים</a><a href="tests.html" class="on">🎯 הכנה למבחן</a><span class="bb-ver" title="גרסה">v<!--VER-->2.1.2<!--/VER--></span></div>
+  <div class="bb-tabs"><a href="dictation.html">📝 הכתבה</a><a href="stories/index.html">📚 סיפורים</a><a href="tests.html" class="on">🎯 הכנה למבחן</a><span class="bb-ver" title="גרסה">v<!--VER-->2.2.0<!--/VER--></span></div>
 </nav>
 <header>
   <h1>🎯 הכנה למבחן</h1>
@@ -135,6 +164,10 @@
     <div class="mock">
       <button class="btn big" id="mockBtn">🏁 מבחן ניסיון — 20 שאלות מכל הנושאים</button>
       <div class="t-best" id="mockBest"></div>
+      <div id="reviewBox">
+        <button class="btn big review-btn" id="reviewBtn">📄 דף החזרה של המורה — כל המשימות לפי הסדר</button>
+        <div class="t-best" id="reviewBest"></div>
+      </div>
     </div>
 
     <div id="linksBox">
@@ -164,6 +197,7 @@
       </div>
       <div class="q-prompt" id="qPrompt"></div>
       <div class="q-text" id="qText"></div>
+      <div class="q-tr" id="qTr" hidden></div>
       <div id="qAnswer"></div>
       <div class="feedback" id="qFeedback"></div>
       <div class="next-row"><button class="btn big" id="qNext" hidden>הבא ◀</button></div>
@@ -189,11 +223,72 @@
 </main>
 
 <script>
+/*KBD-START*/
+const OKbd = (() => {
+  const KEY = "or-kbd";
+  let on = false, target = null, panel = null;
+  try { on = localStorage.getItem(KEY) === "1"; } catch(e){}
+  const rows = ["qwertyuiop", "asdfghjkl", "zxcvbnm"];
+  function build(){
+    panel = document.createElement("div"); panel.className = "okbd"; panel.hidden = true;
+    const row = keys => { const r = document.createElement("div"); r.className = "okbd-row"; keys.forEach(k => r.appendChild(k)); panel.appendChild(r); };
+    const key = (label, act, cls) => { const b = document.createElement("button"); b.type = "button"; b.textContent = label; if (cls) b.className = cls;
+      b.addEventListener("pointerdown", e => { e.preventDefault(); b.classList.add("down"); act(); });
+      ["pointerup", "pointerleave", "pointercancel"].forEach(ev => b.addEventListener(ev, () => b.classList.remove("down")));
+      return b; };
+    rows.forEach((s, i) => row([...s].map(c => key(c, () => type(c))).concat(i === 2 ? [key("⌫", back, "mid")] : [])));
+    row([key("✖", () => set(false), "mid x"), key("'", () => type("'")), key("space", () => type(" "), "wide"), key(".", () => type(".")), key("✔", enter, "mid go")]);
+    document.body.appendChild(panel);
+  }
+  function vis(){ return !!(target && target.isConnected && target.offsetParent !== null); }   // לא נעלמת בין מילה למילה
+  function live(){ return vis() && !target.disabled && !target.readOnly; }
+  function type(s){
+    if (!live()) return;
+    const el = target, a = el.selectionStart ?? el.value.length, b = el.selectionEnd ?? a;
+    el.value = el.value.slice(0, a) + s + el.value.slice(b);
+    try { el.setSelectionRange(a + s.length, a + s.length); } catch(e){}
+    el.dispatchEvent(new Event("input", {bubbles:true}));
+  }
+  function back(){
+    if (!live()) return;
+    const el = target, a = el.selectionStart ?? el.value.length, b = el.selectionEnd ?? a;
+    const from = a === b ? Math.max(0, a - 1) : a;
+    el.value = el.value.slice(0, from) + el.value.slice(b);
+    try { el.setSelectionRange(from, from); } catch(e){}
+    el.dispatchEvent(new Event("input", {bubbles:true}));
+  }
+  function enter(){ if (live()) target.dispatchEvent(new KeyboardEvent("keydown", {key:"Enter", bubbles:true, cancelable:true})); }
+  function sync(){
+    const show = on && vis();
+    if (panel) panel.hidden = !show;
+    document.body.classList.toggle("okbd-open", !!show);
+    document.querySelectorAll(".okbd-tog").forEach(t => { t.classList.toggle("on", on); t.textContent = on ? "⌨️ סגירת המקלדת" : "⌨️ מקלדת"; });
+    if (target) target.inputMode = on ? "none" : "text";      // במקלדת שלנו: בלי מקלדת המערכת בטאבלט
+  }
+  function set(v){ on = v; try { localStorage.setItem(KEY, v ? "1" : "0"); } catch(e){} sync(); if (live()) target.focus(); }
+  function attach(input){
+    if (!panel) build();
+    target = input;
+    if (!input.nextElementSibling || !input.nextElementSibling.classList.contains("okbd-tog")){
+      const t = document.createElement("button"); t.type = "button"; t.className = "okbd-tog";
+      t.addEventListener("pointerdown", e => e.preventDefault());
+      t.onclick = () => set(!on);
+      input.after(t);
+    }
+    input.addEventListener("focus", () => { target = input; sync(); });
+    sync();
+  }
+  setInterval(() => { if (panel) { const s = on && vis(); if (panel.hidden === s) sync(); } }, 300);
+  return { attach, sync };
+})();
+/*KBD-END*/
+
 /*DATA-START*/
 /* ===== המבחנים =====
    כל מבחן: { date:"YYYY-MM-DD", title, topics:[...], links:[{title,url}] }
    כל נושא: { id, emoji, en, he, kind, rule:`HTML`, ...נתונים }
-   kind = "aan" | "thereis" | "plural" | "can" | "vocab" | "items"
+   kind = "aan" | "thereis" | "plural" | "can" | "bank" | "room" | "vocab" | "items"
+   review = דף החזרה של המורה (אופציונלי): כפתור "📄 דף החזרה" שעובר על כל המשימות לפי הסדר
    "items" = שאלות מוכנות: items:[{kind:"choice", prompt, q:"... ___ ...", o:[...], a, why}, {kind:"write", prompt, q, a, why}]
    בכתבת HTML של rule: <span class="say">...</span> = דוגמה שמוקראת בלחיצה */
 const TESTS = [
@@ -209,43 +304,73 @@ const TESTS = [
     ],
     topics:[
       { id:"aan", emoji:"🍎", en:"A / An", he:"מתי a ומתי an לפני שם עצם ביחיד", kind:"aan",
-        a:["dog","book","river","teacher","mouse","bird","garden","banana","bus","car","monkey","tree","bicycle","picnic","salad","rabbit","mountain","forest","cat","ball"],
-        an:["apple","elephant","umbrella","egg","orange","onion","adult","animal","ice cream","apricot","owl","eagle","octopus","ant"],
+        a:["dog","book","river","teacher","mouse","bird","garden","banana","bus","car","monkey","tree","bicycle","picnic","salad","rabbit","mountain","forest","cat","ball","horse","plant","sheep","field","farm","bottle"],
+        an:["apple","elephant","umbrella","egg","orange","onion","adult","animal","ice cream","apricot","owl","eagle","octopus","ant","uncle","aunt"],
+        he:{dog:"כלב",book:"ספר",river:"נהר",teacher:"מורה",mouse:"עכבר",bird:"ציפור*",garden:"גינה*",banana:"בננה*",bus:"אוטובוס",car:"מכונית*",
+            monkey:"קוף",tree:"עץ",bicycle:"אופניים",picnic:"פיקניק",salad:"סלט",rabbit:"ארנב",mountain:"הר",forest:"יער",cat:"חתול",ball:"כדור",
+            horse:"סוס",plant:"צמח",sheep:"כבשה*",field:"שדה",farm:"חווה*",bottle:"בקבוק",apple:"תפוח",elephant:"פיל",umbrella:"מטרייה*",egg:"ביצה*",
+            orange:"תפוז",onion:"בצל",adult:"מבוגר",animal:"חיה*","ice cream":"גלידה*",apricot:"משמש",owl:"ינשוף",eagle:"נשר",octopus:"תמנון",
+            ant:"נמלה*",uncle:"דוד",aunt:"דודה*"},
+        // משפטים כמו בדף החזרה: לפעמים יש מילת תואר בין a/an לשם העצם, ובוחרים לפי המילה שמיד אחרי
+        sentences:[["We see ___ rabbit near the tree.","a"],["My father has ___ old car.","an"],["There is ___ plant near the house.","a"],
+                   ["She is ___ adult.","an"],["I have ___ uncle in the south.","an"],["He reads ___ interesting book.","an"],
+                   ["I see ___ big elephant.","a"],["She has ___ old dog.","an"],["It is ___ young horse.","a"],["There is ___ orange cat in the garden.","an"],
+                   ["My uncle has ___ new bicycle.","a"],["I eat ___ egg every day.","an"],["There is ___ small apple on the table.","a"],
+                   ["He is ___ old man.","an"],["We have ___ easy test.","an"],["She has ___ beautiful umbrella.","a"]],
         rule:`
           <div class="box b1"><div class="big">a</div>לפני מילה שמתחילה ב<b>צליל של עיצור</b> (b, d, m, t...)
             <div class="ex"><span class="say">a dog</span> · <span class="say">a book</span> · <span class="say">a river</span> · <span class="say">a teacher</span></div></div>
           <div class="box b2"><div class="big">an</div>לפני מילה שמתחילה ב<b>צליל של תנועה</b>
-            <div class="ex"><span class="say">an apple</span> · <span class="say">an elephant</span> · <span class="say">an umbrella</span> · <span class="say">an egg</span></div></div>
+            <div class="ex"><span class="say">an apple</span> · <span class="say">an elephant</span> · <span class="say">an umbrella</span> · <span class="say">an uncle</span></div></div>
+          <div class="box b4"><div class="big">a big apple · an old car</div>שימי לב! בוחרים לפי המילה שבאה <b>מיד אחרי</b> a או an, גם כשזו מילת תואר.
+            <div class="ex"><span class="say">an old car</span> · <span class="say">an interesting book</span><br><span class="say">a big elephant</span> · <span class="say">a small apple</span></div></div>
           <div class="box b3"><div class="big">A E I O U</div>אותיות התנועה באנגלית. בוחרים לפי הצליל בתחילת המילה.
             <div class="tip">a ו-an באים רק לפני שם עצם <b>ביחיד</b> (אחד): a dog, אבל two dogs.</div></div>`},
       { id:"thereis", emoji:"🐰", en:"There is / There are", he:"יש — ביחיד וברבים", kind:"thereis",
-        one:["a mouse","a river","an animal","a bird","a garden","a dog","an apple","a tree","a rabbit","an elephant","a monkey","a bicycle"],
-        many:["rabbits","mountains","birds","forests","animals","two dogs","three apples","a lot of apples","five trees","many flowers","two monkeys","four birds"],
-        places:["in the forest","in the garden","in the picture","near the tree","in the park","near the river"],
+        one:["a mouse","a river","an animal","a bird","a garden","a dog","an apple","a tree","a rabbit","an elephant","a monkey","a bicycle","a horse","a mountain","a plant"],
+        many:["rabbits","mountains","birds","forests","animals","two dogs","three apples","a lot of apples","five trees","many flowers","two monkeys","four birds",
+              "many sheep","three children","a lot of bottles","four plants","two bicycles"],
+        he:{"a mouse":"עכבר","a river":"נהר","an animal":"חיה","a bird":"ציפור","a garden":"גינה","a dog":"כלב","an apple":"תפוח","a tree":"עץ",
+            "a rabbit":"ארנב","an elephant":"פיל","a monkey":"קוף","a bicycle":"אופניים","a horse":"סוס","a mountain":"הר","a plant":"צמח",
+            rabbits:"ארנבים",mountains:"הרים",birds:"ציפורים",forests:"יערות",animals:"חיות","two dogs":"שני כלבים","three apples":"שלושה תפוחים",
+            "a lot of apples":"הרבה תפוחים","five trees":"חמישה עצים","many flowers":"הרבה פרחים","two monkeys":"שני קופים","four birds":"ארבע ציפורים",
+            "many sheep":"הרבה כבשים","three children":"שלושה ילדים","a lot of bottles":"הרבה בקבוקים","four plants":"ארבעה צמחים","two bicycles":"שני אופניים",
+            "in the forest":"ביער","in the garden":"בגינה","in the picture":"בתמונה","near the tree":"ליד העץ","in the park":"בפארק","near the river":"ליד הנהר",
+            "in the field":"בשדה","on the farm":"בחווה","on the grass":"על הדשא","under the table":"מתחת לשולחן"},
+        places:["in the forest","in the garden","in the picture","near the tree","in the park","near the river","in the field","on the farm","on the grass","under the table"],
         rule:`
           <div class="box b1"><div class="big">There is</div>שם עצם <b>ביחיד</b>: There is + a / an + שם עצם
-            <div class="ex"><span class="say">There is a dog.</span><br><span class="say">There is an apple.</span></div></div>
+            <div class="ex"><span class="say">There is a dog.</span><br><span class="say">There is a horse in the field.</span></div></div>
           <div class="box b3"><div class="big">There are</div>שם עצם <b>ברבים</b>: There are + שם עצם ברבים
-            <div class="ex"><span class="say">There are two dogs.</span><br><span class="say">There are three apples.</span></div></div>
-          <div class="tip">💡 טיפ: רואה a או an? זה יחיד, ולכן is. רואה מספר, a lot of או s בסוף? זה רבים, ולכן are.</div>`},
+            <div class="ex"><span class="say">There are two dogs.</span><br><span class="say">There are a lot of bottles on the grass.</span></div></div>
+          <div class="box b2"><div class="big">sheep · children · mice</div>מילים ברבים <b>בלי s</b>. עדיין רבים, ולכן are!
+            <div class="ex"><span class="say">There are many sheep on the farm.</span><br><span class="say">There are three children in the park.</span></div></div>
+          <div class="tip">💡 טיפ: רואה a או an? זה יחיד, ולכן is. רואה מספר, many, a lot of או s בסוף? זה רבים, ולכן are.<br>✍️ במבחן כותבים את שתי המילים, עם T גדולה בתחילת המשפט: There is / There are.</div>`},
       { id:"plural", emoji:"🐶🐶", en:"Singular & Plural", he:"יחיד ורבים", kind:"plural",
         groups:{
-          s:["dog","book","apple","bird","car","tree","sister","son","river","mountain","forest","rabbit","girl","pencil","flower"],
+          s:["dog","book","apple","bird","car","tree","sister","son","river","mountain","forest","rabbit","girl","pencil","flower","plant","bottle","horse","uncle"],
           es:["box","bus","class","dish","watch","fox","wish","glass","brush","sandwich","lunch","dress"],
           ies:["baby","family","city","strawberry","cherry","story","party","lady"],
-          ys:["boy","toy","monkey","day","key","donkey"]
+          ys:["boy","toy","monkey","day","key","donkey"],
+          same:["sheep","fish"]
         },
+        irregular:{child:"children",mouse:"mice",man:"men",woman:"women",foot:"feet",tooth:"teeth"},
         sentences:[["He has two ___.","sister"],["There are three ___ at the park.","baby"],["There are a lot of ___ in the forest.","monkey"],
-                   ["She has two ___.","son"],["I see four ___.","box"],["There are two ___ in the street.","bus"],["We have many ___.","toy"],["There are three big ___ in Israel.","city"]],
+                   ["She has two ___.","son"],["I see four ___.","box"],["There are two ___ in the street.","bus"],["We have many ___.","toy"],["There are three big ___ in Israel.","city"],
+                   ["There are many ___ on the farm.","sheep"],["There are three ___ in the park.","child"],["I see two ___ under the table.","mouse"]],
         rule:`
           <div class="box b1"><div class="big">+ s</div>לרוב שמות העצם מוסיפים s
-            <div class="ex"><span class="say">dog → dogs</span> · <span class="say">book → books</span> · <span class="say">apple → apples</span></div></div>
+            <div class="ex"><span class="say">dog → dogs</span> · <span class="say">bird → birds</span> · <span class="say">plant → plants</span></div></div>
           <div class="box b2"><div class="big">+ es</div>מילה שמסתיימת ב: <b class="en">s · ss · sh · ch · x · z</b>
-            <div class="ex"><span class="say">box → boxes</span> · <span class="say">bus → buses</span> · <span class="say">class → classes</span><br><span class="say">dish → dishes</span> · <span class="say">watch → watches</span></div></div>
+            <div class="ex"><span class="say">box → boxes</span> · <span class="say">bus → buses</span> · <span class="say">glass → glasses</span><br><span class="say">dish → dishes</span> · <span class="say">watch → watches</span></div></div>
           <div class="box b3"><div class="big">y → ies</div>מילה שמסתיימת ב-y, ו<b>לפני ה-y יש עיצור</b>: מורידים את ה-y ומוסיפים ies
-            <div class="ex"><span class="say">baby → babies</span> · <span class="say">family → families</span> · <span class="say">city → cities</span></div></div>
+            <div class="ex"><span class="say">baby → babies</span> · <span class="say">family → families</span> · <span class="say">party → parties</span></div></div>
           <div class="box b4"><div class="big">y + s</div>מילה שמסתיימת ב-y, ו<b>לפני ה-y יש תנועה</b> (a e i o u): משאירים את ה-y ומוסיפים רק s
-            <div class="ex"><span class="say">boy → boys</span> · <span class="say">toy → toys</span> · <span class="say">monkey → monkeys</span></div></div>`},
+            <div class="ex"><span class="say">boy → boys</span> · <span class="say">toy → toys</span> · <span class="say">key → keys</span></div></div>
+          <div class="box b1"><div class="big">יוצאי דופן</div>את אלה זוכרים בעל פה
+            <div class="ex"><span class="say">sheep → sheep</span> · <span class="say">fish → fish</span><br><span class="say">child → children</span> · <span class="say">mouse → mice</span> · <span class="say">man → men</span></div></div>
+          <div class="box b3"><div class="big">rabbits → a rabbit</div>מרבים ליחיד: מורידים את סוף הרבים, ו<b>לא שוכחים a או an</b> לפני המילה!
+            <div class="ex"><span class="say">cities → a city</span> · <span class="say">buses → a bus</span> · <span class="say">apples → an apple</span></div></div>`},
       { id:"can", emoji:"🏊‍♀️", en:"Can / Can't", he:"יכולה / לא יכולה", kind:"can",
         facts:[
           ["A fish ___ swim.","can","דג יודע לשחות."],["A fish ___ fly.","can't","דג לא יכול לעוף."],
@@ -255,7 +380,10 @@ const TESTS = [
           ["A cat ___ read a book.","can't","חתול לא יכול לקרוא ספר."],["A rabbit ___ jump.","can","ארנב יכול לקפוץ."],
           ["A tree ___ walk.","can't","עץ לא יכול ללכת."],["A fish ___ climb a tree.","can't","דג לא יכול לטפס על עץ."],
           ["A horse ___ run fast.","can","סוס יכול לרוץ מהר."],["A cow ___ sing.","can't","פרה לא יכולה לשיר."],
-          ["I ___ swim in the sea.","can","אפשר לשחות בים."],["A car ___ fly.","can't","מכונית לא יכולה לעוף."]
+          ["I ___ swim in the sea.","can","אפשר לשחות בים."],["A car ___ fly.","can't","מכונית לא יכולה לעוף."],
+          ["A sheep ___ fly.","can't","כבשה לא יכולה לעוף."],["A young girl ___ look after an adult.","can't","ילדה קטנה לא יכולה לטפל במבוגר. המבוגר מטפל בה."],
+          ["A bird ___ ride a bicycle.","can't","ציפור לא יכולה לרכוב על אופניים."],["Rabbits ___ jump.","can","ארנבים יכולים לקפוץ."],
+          ["An adult ___ look after a baby.","can","מבוגר יכול לטפל בתינוק."],["Sheep ___ eat grass.","can","כבשים אוכלות דשא."]
         ],
         base:[["She can ___.","sing","sings"],["He can ___ fast.","run","runs"],["She can ___ a bicycle.","ride","rides"],
               ["He can't ___.","cook","cooks"],["She can't ___ a car.","drive","drives"],["The baby can ___.","walk","walks"],
@@ -263,20 +391,155 @@ const TESTS = [
               ["He can ___ English.","read","reads"]],
         rule:`
           <div class="box b3"><div class="big">can = יכול / יכולה</div>Subject + can + פועל
-            <div class="ex"><span class="say">I can swim.</span><br><span class="say">She can dance.</span><br><span class="say">He can run.</span></div></div>
+            <div class="ex"><span class="say">I can swim.</span><br><span class="say">She can dance.</span><br><span class="say">A horse can run.</span></div></div>
           <div class="box b2"><div class="big">can't = לא יכול / לא יכולה</div>Subject + can't + פועל
-            <div class="ex"><span class="say">I can't fly.</span><br><span class="say">She can't drive.</span><br><span class="say">He can't cook.</span></div></div>
+            <div class="ex"><span class="say">I can't fly.</span><br><span class="say">She can't drive.</span><br><span class="say">A sheep can't fly.</span></div></div>
           <div class="box b4"><b>אחרי can או can't, הפועל בלי s!</b> גם אחרי she ו-he.
-            <div class="ex">✓ <span class="say">She can sing.</span> &nbsp; ✗ She can sings.</div></div>`},
-      // ⚠ רשימה זמנית: המילים המודגשות של Unit 1 נמצאות בתמונה מהמורה, שעוד לא קיבלנו.
-      //    כרגע: מילים מתרגולי Unit 1 ומהסיפור בעמוד 52. להחליף כשמגיעה התמונה.
+            <div class="ex">✓ <span class="say">She can sing.</span> &nbsp; ✗ She can sings.</div></div>
+          <div class="tip">✍️ כותבים can't עם גרש בין n ל-t. במקלדת שעל המסך הגרש נמצא בשורה התחתונה.</div>`},
+      { id:"bank", emoji:"🧺", en:"Word Bank", he:"השלמה ממחסן מילים", kind:"bank",
+        bank:["east","mouse","mountain","age","picnic","grass","grandparents","young","river","old","uncle","plant","climb"],
+        sentences:[["I eat outside with my family at a ___.","picnic"],["The opposite of west is ___.","east"],["My mother's brother is my ___.","uncle"],
+                   ["You can ___ a tree.","climb"],["A ___ is a very high place.","mountain"],["Avner is a grandparent, he is an ___ man.","old"],
+                   ["The children ___ trees in the forest every year.","plant"],["Sheep eat ___.","grass"],
+                   ["A ___ is a small animal. It likes cheese.","mouse"],["My ___ are my mother's parents.","grandparents"],
+                   ["The opposite of old is ___.","young"],["Fish swim in the ___.","river"],["I am ten. What is your ___?","age"],
+                   ["The sun comes up in the ___.","east"],["A baby is very ___.","young"],["My father's brother is my ___.","uncle"]],
+        rule:`
+          <div class="box b1"><div class="big">מחסן מילים · Word Bank</div>במבחן יש רשימת מילים, ובוחרים מתוכה את המילה שמתאימה למשפט. <b>יש מילים מיותרות</b>, ולא כולן נכנסות.
+            <div class="ex"><span class="say">east</span> · <span class="say">mouse</span> · <span class="say">mountain</span> · <span class="say">age</span> · <span class="say">picnic</span> · <span class="say">grass</span> · <span class="say">grandparents</span><br><span class="say">young</span> · <span class="say">river</span> · <span class="say">old</span> · <span class="say">uncle</span> · <span class="say">plant</span> · <span class="say">climb</span></div></div>
+          <div class="box b3"><div class="big">איך פותרים?</div>קוראים את כל המשפט, וחושבים מה חסר: דבר (שם עצם), פעולה (פועל) או איך זה (תואר). אחר כך בודקים שהמילה מתאימה, ומעתיקים אותה בלי שגיאות.
+            <div class="ex"><span class="say">The opposite of west is east.</span><br><span class="say">You can climb a tree.</span></div></div>`},
+      { id:"room", emoji:"🛏️", en:"My Room", he:"מילות יחס, מילות תואר ומשפטים על תמונה", kind:"room",
+        preps:[["on","על"],["in","בתוך"],["under","מתחת ל"],["near","ליד / קרוב ל"],["next to","ליד / צמוד ל"],["in front of","מול / לפני"],["behind","מאחורי"]],
+        words:[["lamp","מנורה"],["bed","מיטה"],["desk","שולחן כתיבה"],["chair","כיסא"],["room","חדר"],["mat","שטיחון"],["book","ספר"],
+               ["picture","תמונה"],["clock","שעון"],["ball","כדור"],["bag","תיק"],["box","קופסה"],["shoes","נעליים"],["socks","גרביים"],
+               ["doll","בובה"],["mirror","מראה"],["big","גדול"],["small","קטן"],["clean","נקי"],["old","ישן / זקן"],["new","חדש"],
+               ["colorful","צבעוני"],["beautiful","יפה"]],
+        // [משפט באנגלית, תרגום, מילת היחס שבו]
+        lines:[["There is a lamp on the desk.","יש מנורה על השולחן.","on"],["There is a cat on the bed.","יש חתול על המיטה.","on"],
+               ["There are books in the box.","יש ספרים בתוך הקופסה.","in"],["There is a ball under the chair.","יש כדור מתחת לכיסא.","under"],
+               ["There are shoes near the bed.","יש נעליים ליד המיטה.","near"],["There is a big clock next to the lamp.","יש שעון גדול ליד המנורה.","next to"],
+               ["There is a mat in front of the bed.","יש שטיחון מול המיטה.","in front of"],["There is a bag behind the chair.","יש תיק מאחורי הכיסא.","behind"],
+               ["There is a small doll on the mat.","יש בובה קטנה על השטיחון.","on"],["There are colorful pictures on the wall.","יש תמונות צבעוניות על הקיר.","on"],
+               ["There is a new mirror in my room.","יש מראה חדשה בחדר שלי.","in"],["There are two old chairs near the desk.","יש שני כיסאות ישנים ליד השולחן.","near"],
+               ["There is a beautiful bed in the room.","יש מיטה יפה בחדר.","in"],["There are clean socks in the bag.","יש גרביים נקיים בתוך התיק.","in"],
+               ["There is a colorful ball under the bed.","יש כדור צבעוני מתחת למיטה.","under"],["There is a small box behind the doll.","יש קופסה קטנה מאחורי הבובה.","behind"]],
+        rule:`
+          <div class="box b1"><div class="big">מילות יחס · Prepositions</div>איפה הדבר נמצא?
+            <div class="ex"><span class="say">on</span> = על · <span class="say">in</span> = בתוך · <span class="say">under</span> = מתחת ל<br>
+            <span class="say">near</span> = ליד · <span class="say">next to</span> = צמוד ל<br>
+            <span class="say">in front of</span> = מול · <span class="say">behind</span> = מאחורי</div></div>
+          <div class="box b2"><div class="big">מילות תואר · Adjectives</div>מילת התואר באה <b>לפני</b> שם העצם (הפוך מעברית!)
+            <div class="ex"><span class="say">a big bed</span> = מיטה גדולה · <span class="say">a small doll</span> = בובה קטנה<br>
+            <span class="say">a new mirror</span> · <span class="say">an old chair</span> · <span class="say">colorful pictures</span> · <span class="say">clean socks</span> · <span class="say">a beautiful lamp</span></div></div>
+          <div class="box b3"><div class="big">משפט על התמונה</div>There is / There are, אחר כך a/an, מילת תואר, שם עצם, מילת יחס, the ומקום.
+            <div class="ex"><span class="say">There is a big clock next to the lamp.</span><br><span class="say">There are two old chairs near the desk.</span></div>
+            <div class="tip">✍️ אות גדולה בתחילת המשפט, ונקודה בסוף. מעתיקים את המילים מהמחסן בלי שגיאות, וכל מילה פעם אחת.</div></div>`},
+      // ⚠ עדיין זמני: המילים המודגשות של Unit 1 נמצאות בתמונה מהמורה, שעוד לא קיבלנו.
+      //    כרגע: מחסן המילים מדף החזרה של המורה, המילים מהמשימות בדף, ומילים מתרגולי Unit 1.
       { id:"vocab", emoji:"📖", en:"Vocabulary", he:"אוצר מילים — Unit 1", kind:"vocab",
-        words:[["river","נהר"],["mountain","הר"],["forest","יער"],["garden","גינה"],["animal","חיה"],["bird","ציפור"],["rabbit","ארנב"],
-               ["mouse","עכבר"],["monkey","קוף"],["teacher","מורה"],["adult","מבוגר"],["baby","תינוק"],["sister","אחות"],["son","בן"],
-               ["salad","סלט"],["umbrella","מטרייה"],["bicycle","אופניים"],["tree","עץ"],["apple","תפוח"],["grass","דשא"],
-               ["picnic","פיקניק"],["climb","לטפס"],["grow","לגדול / להצמיח"],["plant","לשתול"],["look after","לטפל / להשגיח"],
-               ["too many","יותר מדי"],["water","מים"],["week","שבוע"]],
+        words:[["east","מזרח"],["west","מערב"],["north","צפון"],["south","דרום"],["mountain","הר"],["river","נהר"],["forest","יער"],
+               ["field","שדה"],["farm","חווה"],["grass","דשא"],["plant","צמח / לשתול"],["climb","לטפס"],["picnic","פיקניק"],
+               ["mouse","עכבר"],["rabbit","ארנב"],["horse","סוס"],["sheep","כבשה / כבשים"],["animal","חיה"],["bird","ציפור"],
+               ["uncle","דוד"],["grandparents","סבא וסבתא"],["adult","מבוגר"],["children","ילדים"],["age","גיל"],["young","צעיר"],
+               ["old","זקן / ישן"],["bicycle","אופניים"],["bottle","בקבוק"],["garden","גינה"],["look after","לטפל / להשגיח"],
+               ["grow","לגדול / להצמיח"],["high","גבוה"],["opposite","ההפך"]],
         rule:null}
+    ],
+    // תרגום לעברית של משפטים שלמים (עם התשובה הנכונה), מוצג אחרי שאור עונה. משמש את כל הנושאים ואת דף החזרה
+    tr:{
+      "We see a rabbit near the tree.":"אנחנו רואים ארנב ליד העץ.", "My father has an old car.":"לאבא שלי יש מכונית ישנה.",
+      "There is a plant near the house.":"יש צמח ליד הבית.", "She is an adult.":"היא מבוגרת.", "I have an uncle in the south.":"יש לי דוד בדרום.",
+      "He reads an interesting book.":"הוא קורא ספר מעניין.", "I see a big elephant.":"אני רואה פיל גדול.", "She has an old dog.":"יש לה כלב זקן.",
+      "It is a young horse.":"זה סוס צעיר.", "There is an orange cat in the garden.":"יש חתול כתום בגינה.", "My uncle has a new bicycle.":"לדוד שלי יש אופניים חדשים.",
+      "I eat an egg every day.":"אני אוכלת ביצה כל יום.", "There is a small apple on the table.":"יש תפוח קטן על השולחן.", "He is an old man.":"הוא איש זקן.",
+      "We have an easy test.":"יש לנו מבחן קל.", "She has a beautiful umbrella.":"יש לה מטרייה יפה.",
+      "There is a horse in the field.":"יש סוס בשדה.", "There are four plants near the river.":"יש ארבעה צמחים ליד הנהר.",
+      "There is a mountain behind the forest.":"יש הר מאחורי היער.", "There are two bicycles next to the picnic.":"יש שני אופניים ליד הפיקניק.",
+      "There are a lot of bottles on the grass.":"יש הרבה בקבוקים על הדשא.", "There are many sheep on the farm.":"יש הרבה כבשים בחווה.",
+      "There is a mouse under the table.":"יש עכבר מתחת לשולחן.", "There are three children in the park.":"יש שלושה ילדים בפארק.",
+      "He has two sisters.":"יש לו שתי אחיות.", "There are three babies at the park.":"יש שלושה תינוקות בפארק.",
+      "There are a lot of monkeys in the forest.":"יש הרבה קופים ביער.", "She has two sons.":"יש לה שני בנים.", "I see four boxes.":"אני רואה ארבע קופסאות.",
+      "There are two buses in the street.":"יש שני אוטובוסים ברחוב.", "We have many toys.":"יש לנו הרבה צעצועים.",
+      "There are three big cities in Israel.":"יש שלוש ערים גדולות בישראל.", "I see two mice under the table.":"אני רואה שני עכברים מתחת לשולחן.",
+      "A fish can swim.":"דג יכול לשחות.", "A fish can't fly.":"דג לא יכול לעוף.", "A bird can fly.":"ציפור יכולה לעוף.", "A dog can't talk.":"כלב לא יכול לדבר.",
+      "A baby can't drive a car.":"תינוק לא יכול לנהוג במכונית.", "A monkey can climb a tree.":"קוף יכול לטפס על עץ.", "An elephant can't fly.":"פיל לא יכול לעוף.",
+      "Lily can ride a bicycle.":"לילי יכולה לרכוב על אופניים.", "A cat can't read a book.":"חתול לא יכול לקרוא ספר.", "A rabbit can jump.":"ארנב יכול לקפוץ.",
+      "A tree can't walk.":"עץ לא יכול ללכת.", "A fish can't climb a tree.":"דג לא יכול לטפס על עץ.", "A horse can run fast.":"סוס יכול לרוץ מהר.",
+      "A cow can't sing.":"פרה לא יכולה לשיר.", "I can swim in the sea.":"אני יכולה לשחות בים.", "A car can't fly.":"מכונית לא יכולה לעוף.",
+      "A sheep can't fly.":"כבשה לא יכולה לעוף.", "A young girl can't look after an adult.":"ילדה צעירה לא יכולה לטפל במבוגר.",
+      "A bird can't ride a bicycle.":"ציפור לא יכולה לרכוב על אופניים.", "Rabbits can jump.":"ארנבים יכולים לקפוץ.",
+      "An adult can look after a baby.":"מבוגר יכול לטפל בתינוק.", "Sheep can eat grass.":"כבשים יכולות לאכול דשא.",
+      "A horse can run.":"סוס יכול לרוץ.",
+      "She can sing.":"היא יכולה לשיר.", "He can run fast.":"הוא יכול לרוץ מהר.", "She can ride a bicycle.":"היא יכולה לרכוב על אופניים.",
+      "He can't cook.":"הוא לא יכול לבשל.", "She can't drive a car.":"היא לא יכולה לנהוג במכונית.", "The baby can walk.":"התינוק יכול ללכת.",
+      "My dog can jump high.":"הכלב שלי יכול לקפוץ גבוה.", "Lily can climb the tree.":"לילי יכולה לטפס על העץ.", "She can dance well.":"היא יכולה לרקוד יפה.",
+      "He can read English.":"הוא יכול לקרוא אנגלית.",
+      "I eat outside with my family at a picnic.":"אני אוכלת בחוץ עם המשפחה שלי בפיקניק.", "The opposite of west is east.":"ההפך של מערב הוא מזרח.",
+      "My mother's brother is my uncle.":"האח של אמא שלי הוא הדוד שלי.", "You can climb a tree.":"אפשר לטפס על עץ.",
+      "A mountain is a very high place.":"הר הוא מקום גבוה מאוד.", "Avner is a grandparent, he is an old man.":"אבנר הוא סבא, הוא איש זקן.",
+      "The children plant trees in the forest every year.":"הילדים שותלים עצים ביער כל שנה.", "Sheep eat grass.":"כבשים אוכלות דשא.",
+      "A mouse is a small animal. It likes cheese.":"עכבר הוא חיה קטנה. הוא אוהב גבינה.", "My grandparents are my mother's parents.":"סבא וסבתא שלי הם ההורים של אמא שלי.",
+      "The opposite of old is young.":"ההפך של זקן הוא צעיר.", "Fish swim in the river.":"דגים שוחים בנהר.", "I am ten. What is your age?":"אני בת עשר. מה הגיל שלך?",
+      "The sun comes up in the east.":"השמש עולה במזרח.", "A baby is very young.":"תינוק הוא צעיר מאוד.", "My father's brother is my uncle.":"האח של אבא שלי הוא הדוד שלי."
+    },
+    // דף החזרה של המורה, משימה אחרי משימה, כמו במבחן. כל משימה: {kind, prompt, o?, bank?, list:[[q, a, why, options?]]}
+    // kind: "choice" | "write" | "translate" (list:[[אנגלית, עברית]]) | "build" (list:[[עברית, אנגלית]])
+    review:[
+      { kind:"choice", prompt:"1. השלימי a או an", o:["a","an"], list:[
+        ["We see ___ rabbit near the tree.","a","המילה rabbit מתחילה בעיצור (r), ולכן a."],
+        ["My father has ___ old car.","an","המילה שמיד אחרי היא old, והיא מתחילה בתנועה (o), ולכן an."],
+        ["There is ___ plant near the house.","a","המילה plant מתחילה בעיצור (p), ולכן a."],
+        ["She is ___ adult.","an","המילה adult מתחילה בתנועה (a), ולכן an."],
+        ["I have ___ uncle in the south.","an","המילה uncle מתחילה בתנועה (u), ולכן an."],
+        ["He reads ___ interesting book.","an","המילה שמיד אחרי היא interesting, והיא מתחילה בתנועה (i), ולכן an."]]},
+      { kind:"translate", prompt:"2. מה פירוש המשפט?", list:[
+        ["We see a rabbit near the tree.","אנחנו רואים ארנב ליד העץ."],
+        ["My father has an old car.","לאבא שלי יש מכונית ישנה."],
+        ["There is a plant near the house.","יש צמח ליד הבית."],
+        ["She is an adult.","היא מבוגרת."],
+        ["I have an uncle in the south.","יש לי דוד בדרום."],
+        ["He reads an interesting book.","הוא קורא ספר מעניין."]]},
+      { kind:"write", prompt:"3. כתבי There is או There are", list:[
+        ["___ a horse in the field.","There is","הביטוי a horse הוא יחיד, ולכן There is."],
+        ["___ four plants near the river.","There are","הביטוי four plants הוא רבים, ולכן There are."],
+        ["___ a mountain behind the forest.","There is","הביטוי a mountain הוא יחיד, ולכן There is."],
+        ["___ two bicycles next to the picnic.","There are","הביטוי two bicycles הוא רבים, ולכן There are."],
+        ["___ a lot of bottles on the grass.","There are","הביטוי a lot of bottles הוא רבים, ולכן There are."],
+        ["___ many sheep on the farm.","There are","המילה sheep כאן ברבים (many), ולכן There are."],
+        ["___ a mouse under the table.","There is","הביטוי a mouse הוא יחיד, ולכן There is."],
+        ["___ three children in the park.","There are","המילה children היא רבים (ילדים), ולכן There are."]]},
+      { kind:"write", prompt:"4. כתבי ברבים", list:[
+        ["a bird → ___","birds","רוב המילים: מוסיפים s."],["glass → ___","glasses","המילה glass מסתיימת ב-ss, ולכן es."],
+        ["a baby → ___","babies","לפני ה-y יש עיצור (b), ולכן ies."],["a toy → ___","toys","לפני ה-y יש תנועה (o), ולכן רק s."],
+        ["a family → ___","families","לפני ה-y יש עיצור (l), ולכן ies."],["a box → ___","boxes","המילה box מסתיימת ב-x, ולכן es."],
+        ["a party → ___","parties","לפני ה-y יש עיצור (t), ולכן ies."],["a boy → ___","boys","לפני ה-y יש תנועה (o), ולכן רק s."],
+        ["a sheep → ___","sheep","המילה sheep לא משתנה ברבים."],["a plant → ___","plants","רוב המילים: מוסיפים s."]]},
+      { kind:"write", prompt:"5. כתבי ביחיד, עם a או an", list:[
+        ["rabbits → ___","a rabbit","ביחיד: מורידים את ה-s ומוסיפים a."],["cities → ___","a city","הסיומת ies חוזרת להיות y: a city."],
+        ["buses → ___","a bus","הסיומת es יורדת: a bus."],["sheep → ___","a sheep","המילה sheep לא משתנה, רק מוסיפים a."],
+        ["families → ___","a family","הסיומת ies חוזרת להיות y: a family."],["apples → ___","an apple","המילה apple מתחילה בתנועה, ולכן an."]]},
+      { kind:"choice", prompt:"6. בחרי את צורת הרבים הנכונה", list:[
+        ["one dish → two ___","dishes","המילה dish מסתיימת ב-sh, ולכן es.",["dishes","dishs"]],
+        ["one party → three ___","parties","לפני ה-y יש עיצור, ולכן ies.",["parties","partys"]],
+        ["one key → two ___","keys","לפני ה-y יש תנועה (e), ולכן רק s.",["keys","keies"]],
+        ["one glass → four ___","glasses","המילה glass מסתיימת ב-ss, ולכן es.",["glasses","glasss"]],
+        ["one watch → two ___","watches","המילה watch מסתיימת ב-ch, ולכן es.",["watchs","watches"]]]},
+      { kind:"write", prompt:"7. כתבי can או can't", list:[
+        ["A horse ___ run.","can","סוס יכול לרוץ."],["A sheep ___ fly.","can't","כבשה לא יכולה לעוף."],
+        ["A fish ___ swim.","can","דג יכול לשחות."],["A young girl ___ look after an adult.","can't","ילדה קטנה לא יכולה לטפל במבוגר."],
+        ["A bird ___ ride a bicycle.","can't","ציפור לא יכולה לרכוב על אופניים."],["Rabbits ___ jump.","can","ארנבים יכולים לקפוץ."]]},
+      { kind:"write", prompt:"8. השלימי ממחסן המילים (יש מילים מיותרות)",
+        bank:["east","mouse","mountain","age","picnic","grass","grandparents","young","river","old","uncle","plant","climb"], list:[
+        ["I eat outside with my family at a ___.","picnic","אוכלים בחוץ עם המשפחה = פיקניק."],["The opposite of west is ___.","east","ההפך של מערב (west) הוא מזרח (east)."],
+        ["My mother's brother is my ___.","uncle","האח של אמא הוא הדוד (uncle)."],["You can ___ a tree.","climb","על עץ מטפסים (climb)."],
+        ["A ___ is a very high place.","mountain","מקום גבוה מאוד = הר (mountain)."],["Avner is a grandparent, he is an ___ man.","old","סבא הוא איש זקן (old). שימי לב ל-an לפני old."],
+        ["The children ___ trees in the forest every year.","plant","הילדים שותלים (plant) עצים."],["Sheep eat ___.","grass","כבשים אוכלות דשא (grass)."]]},
+      { kind:"build", prompt:"9. סדרי את המילים למשפט על החדר", list:[
+        ["יש מנורה על השולחן.","There is a lamp on the desk."],["יש שעון גדול ליד המנורה.","There is a big clock next to the lamp."],
+        ["יש כדור צבעוני מתחת למיטה.","There is a colorful ball under the bed."],["יש שני כיסאות ישנים ליד השולחן.","There are two old chairs near the desk."],
+        ["יש נעליים נקיות מול המיטה.","There are clean shoes in front of the bed."]]}
     ]}
 ];
 /*DATA-END*/
@@ -319,46 +582,65 @@ const VOWELS = "aeiou";
 const GEN = {
   aan(t){
     const frames = ["It is ___ X.", "This is ___ X.", "There is ___ X."];
-    return [...t.a.map(w => [w, "a"]), ...t.an.map(w => [w, "an"])].map(([w, ans]) => ({
-      kind:"choice", prompt:"השלימי a או an", q: pick(frames).replace("X", w), o:["a", "an"], a: ans,
-      why: ans === "an" ? `המילה ${w} מתחילה בצליל של תנועה (${w[0]}), ולכן an.` : `המילה ${w} מתחילה בצליל של עיצור (${w[0]}), ולכן a.`
-    }));
+    const why = (w, ans) => ans === "an" ? `המילה ${w} מתחילה בצליל של תנועה (${w[0]}), ולכן an.` : `המילה ${w} מתחילה בצליל של עיצור (${w[0]}), ולכן a.`;
+    // תרגום: "זה/זאת" לפי המין במילון he (כוכבית = נקבה), ו"יש" ל-There is
+    const heOf = (w, f) => { const x = (t.he || {})[w]; if (!x) return undefined; const fem = x.endsWith("*"), n = x.replace("*", "");
+      return f.startsWith("There") ? `יש ${n}.` : `${fem ? "זאת" : "זה"} ${n}.`; };
+    const out = [...t.a.map(w => [w, "a"]), ...t.an.map(w => [w, "an"])].map(([w, ans]) => { const f = pick(frames); return {
+      kind:"choice", prompt:"השלימי a או an", q: f.replace("X", w), o:["a", "an"], a: ans, why: why(w, ans), tr: heOf(w, f) }; });
+    for (const [q, ans] of t.sentences || []){
+      const w = q.split("___ ")[1].split(/[ .]/)[0];
+      out.push({ kind:"choice", prompt:"השלימי a או an (שימי לב למילה שמיד אחרי)", q, o:["a", "an"], a: ans, why: why(w, ans) });
+    }
+    return out;
   },
   thereis(t){
+    const H = t.he || {}, tr = (x, p) => H[x] && H[p] ? `יש ${H[x]} ${H[p]}.` : undefined;   // There is/are = יש
     const mk = (x, ans) => {
       const last = x.split(" ").pop().replace(/s$/, "");
       const place = pick(t.places.filter(p => !p.includes(last))) || t.places[0];
-      return { kind:"choice", prompt:"השלימי is או are", q:`There ___ ${x} ${place}.`, o:["is", "are"], a: ans,
-        why: ans === "is" ? `הביטוי ${x} הוא יחיד (אחד), ולכן There is.` : `הביטוי ${x} הוא ברבים, ולכן There are.` };
+      const place2 = pick(t.places.filter(p => !p.includes(last))) || place;
+      const why = ans === "is" ? `הביטוי ${x} הוא יחיד (אחד), ולכן There is.` : `הביטוי ${x} הוא ברבים, ולכן There are.`;
+      return [{ kind:"choice", prompt:"השלימי is או are", q:`There ___ ${x} ${place}.`, o:["is", "are"], a: ans, why, tr: tr(x, place) },
+              // כמו בדף החזרה: כותבים את שתי המילים בעצמן
+              { kind:"write", prompt:"כתבי There is או There are", q:`___ ${x} ${place2}.`, a:`There ${ans}`, alt:[ans === "is" ? "there's" : "there're"], why, tr: tr(x, place2) }];
     };
-    return [...t.one.map(x => mk(x, "is")), ...t.many.map(x => mk(x, "are"))];
+    return [...t.one.flatMap(x => mk(x, "is")), ...t.many.flatMap(x => mk(x, "are"))];
   },
   plural(t){
-    const g = t.groups, info = {};
-    const plural = w => { for (const k in g) if (g[k].includes(w)) return PLURAL[k](w); return w + "s"; };
-    const PLURAL = { s: w => w + "s", es: w => w + "es", ies: w => w.slice(0, -1) + "ies", ys: w => w + "s" };
+    const g = t.groups, irr = t.irregular || {}, info = {};
+    const PLURAL = { s: w => w + "s", es: w => w + "es", ies: w => w.slice(0, -1) + "ies", ys: w => w + "s", same: w => w, irr: w => irr[w] };
+    const plural = w => info[w] ? PLURAL[info[w]](w) : w + "s";
+    const art = w => /^[aeiou]/.test(w) ? "an" : "a";
     const why = (k, w) => {
       if (k === "s") return `רוב המילים: מוסיפים s.`;
-      if (k === "es") return `${w} מסתיימת ב-${(w.match(/(sh|ch|ss|s|x|z)$/) || [""])[0]}, ולכן מוסיפים es.`;
+      if (k === "es") return `המילה ${w} מסתיימת ב-${(w.match(/(sh|ch|ss|s|x|z)$/) || [""])[0]}, ולכן מוסיפים es.`;
       if (k === "ies") return `לפני ה-y יש עיצור (${w.slice(-2, -1)}), ולכן y הופכת ל-ies.`;
+      if (k === "same") return `המילה ${w} לא משתנה ברבים: one ${w}, two ${w}.`;
+      if (k === "irr") return `המילה ${w} יוצאת דופן: ברבים ${irr[w]}. את זה זוכרים בעל פה.`;
       return `לפני ה-y יש תנועה (${w.slice(-2, -1)}), ולכן מוסיפים רק s.`;
     };
     for (const k in g) for (const w of g[k]) info[w] = k;
+    for (const w in irr) info[w] = "irr";
     const out = [];
     for (const w in info){
       const k = info[w], ans = PLURAL[k](w);
       out.push({ kind:"write", prompt:"כתבי ברבים", q:`one ${w} → two ___`, a: ans, why: why(k, w), sayText:`one ${w}, two ${ans}` });
       const wrong = w.endsWith("y") ? [w + "s", w.slice(0, -1) + "ies", w + "es"] : [w + "s", w + "es", w + "ies"];
-      out.push({ kind:"choice", prompt:"בחרי את צורת הרבים הנכונה", q:`a ${w} → ___`, o:[...new Set([ans, ...wrong])].slice(0, 3), a: ans, why: why(k, w) });
+      out.push({ kind:"choice", prompt:"בחרי את צורת הרבים הנכונה", q:`${art(w)} ${w} → ___`, o:[...new Set([ans, ...wrong])].slice(0, 3), a: ans, why: why(k, w) });
+      // מרבים ליחיד, עם a/an (משימה 5 בדף החזרה)
+      out.push({ kind:"write", prompt:"כתבי ביחיד, עם a או an", q:`${ans} → ___`, a:`${art(w)} ${w}`,
+        why:`ביחיד: ${art(w)} ${w}. לא לשכוח ${art(w)}${art(w) === "an" ? ", כי המילה מתחילה בתנועה" : ""}.`, sayText:`${ans}, ${art(w)} ${w}` });
     }
     for (const [s, w] of t.sentences){
       const ans = plural(w);
-      out.push({ kind:"choice", prompt:"יחיד או רבים?", q: s, o:[w, ans], a: ans, why:`אחרי מספר או a lot of / many צריך רבים: ${ans}. ${why(info[w] || "s", w)}` });
+      out.push({ kind:"choice", prompt:"יחיד או רבים?", q: s, o: ans === w ? [w, w + "s"] : [w, ans], a: ans, why:`אחרי מספר או a lot of / many צריך רבים: ${ans}. ${why(info[w] || "s", w)}` });
     }
     return out;
   },
   can(t){
-    const out = t.facts.map(([q, a, why]) => ({ kind:"choice", prompt:"השלימי can או can't", q, o:["can", "can't"], a, why }));
+    const out = t.facts.flatMap(([q, a, why]) => [{ kind:"choice", prompt:"השלימי can או can't", q, o:["can", "can't"], a, why },
+                                                  { kind:"write", prompt:"כתבי can או can't", q, a, alt: a === "can't" ? ["cannot"] : [], why }]);
     for (const [q, good, bad] of t.base){
       out.push({ kind:"choice", prompt:"בחרי את הפועל הנכון", q, o:[good, bad], a: good, why:`אחרי can / can't לא מוסיפים s: ${q.replace("___", good)}` });
     }
@@ -374,12 +656,63 @@ const GEN = {
     }
     return out;
   },
+  bank(t){
+    return t.sentences.flatMap(([q, a]) => {
+      const others = shuffle(t.bank.filter(w => w !== a)).slice(0, 3);
+      const why = `המשפט המלא: ${q.replace("___", a)}`;
+      return [{ kind:"choice", prompt:"בחרי מילה ממחסן המילים", q, o:[a, ...others], a, why },
+              { kind:"write", prompt:"השלימי ממחסן המילים (יש מילים מיותרות)", q, a, bank: t.bank, why }];
+    });
+  },
+  room(t){
+    const out = [];
+    for (const [en, he, prep] of t.lines){
+      out.push(buildQ(he, en));
+      const others = shuffle(t.preps.map(p => p[0]).filter(p => p !== prep)).slice(0, 3);
+      out.push({ kind:"choice", prompt:`השלימי את מילת היחס: ${he}`, q: en.replace(new RegExp(`\\b${prep}\\b`), "___"), o:[prep, ...others], a: prep,
+        why:`המילה ${prep} = ${t.preps.find(p => p[0] === prep)[1]}` });
+      const wrongHe = shuffle(t.lines.filter(l => l[0] !== en)).slice(0, 2).map(l => l[1]);
+      out.push({ kind:"choice", prompt:"מה פירוש המשפט?", q: en, o:[he, ...wrongHe], a: he, optHe:true, sayFirst:true, why:`${en} = ${he}` });
+    }
+    for (const [en, he] of t.preps){
+      const others = shuffle(t.preps.filter(p => p[0] !== en)).slice(0, 3);
+      out.push({ kind:"choice", prompt:"מה פירוש מילת היחס?", q: en, o:[he, ...others.map(p => p[1])], a: he, optHe:true, sayFirst:true, why:`${en} = ${he}` });
+    }
+    out.push(...shuffle(GEN.vocab(t)).slice(0, 16));
+    return out;
+  },
   items(t){ return t.items.map(x => ({...x})); }
 };
+// שאלת "סדרי את המילים": he = המשפט בעברית, en = המשפט הנכון. האריחים הם המילים (הנקודה צמודה למילה האחרונה)
+function buildQ(he, en, prompt){
+  return { kind:"build", prompt: prompt || "סדרי את המילים למשפט באנגלית", q: he, he:true, a: en, tiles: en.split(" "), sayText: en,
+           why:`המשפט: ${en} (אות גדולה בהתחלה ונקודה בסוף)` };
+}
+// דף החזרה של המורה → רשימת שאלות לפי הסדר
+function reviewQs(t){
+  const out = [];
+  for (const s of t.review){
+    for (const [q, a, why, o] of s.list){
+      if (s.kind === "build") out.push(buildQ(q, a, s.prompt));
+      else if (s.kind === "translate"){
+        const wrongHe = shuffle(s.list.filter(x => x[0] !== q)).slice(0, 2).map(x => x[1]);
+        out.push({ kind:"choice", prompt: s.prompt, q, o:[a, ...wrongHe], a, optHe:true, sayFirst:true, why:`${q} = ${a}` });
+      }
+      else out.push({ kind: s.kind, prompt: s.prompt, q, a, o: o || s.o, bank: s.bank, why: why || "" });
+    }
+  }
+  return out.map(x => withTr({...x, topicId:"review"}));
+}
 function pool(topic){
   const seen = new Set();
   return GEN[topic.kind](topic).filter(x => { const k = x.prompt + x.q + x.o; if (seen.has(k)) return false; seen.add(k); return true; })
-    .map(x => ({...x, topicId: topic.id}));
+    .map(x => withTr({...x, topicId: topic.id}));
+}
+// תרגום לעברית של המשפט המלא, מוצג אחרי התשובה. מהמילון tr של המבחן, אם השאלה לא בנתה אותו בעצמה
+function withTr(x){
+  if (x.tr || x.he || x.optHe || x.kind === "build") return x;
+  const s = fullSentence(x, x.a), T = (test && test.tr) || {};
+  return T[s] ? {...x, tr: T[s]} : x;
 }
 
 /* ===== מצב ===== */
@@ -443,6 +776,8 @@ function renderHome(){
     box.appendChild(c);
   }
   $("mockBest").textContent = B.mock != null ? `⭐ התוצאה הכי טובה במבחן הניסיון: ${B.mock}` : "";
+  $("reviewBox").hidden = !(test.review && test.review.length);
+  $("reviewBest").textContent = B.review != null ? `⭐ התוצאה הכי טובה בדף החזרה: ${B.review}%` : "";
   const links = $("links"); links.innerHTML = "";
   $("linksBox").hidden = !(test.links && test.links.length);
   for (const l of test.links || []){
@@ -451,6 +786,8 @@ function renderHome(){
   }
 }
 $("mockBtn").onclick = () => startMock();
+const REVIEW = { id:"review", emoji:"📄", en:"דף החזרה של המורה", kind:"review" };
+$("reviewBtn").onclick = () => startPractice(REVIEW);
 
 /* ===== הסבר ===== */
 let ruleTopic = null;
@@ -465,8 +802,8 @@ $("ruleToPractice").onclick = () => startPractice(ruleTopic);
    run = {mode:"practice"|"mock", label, queue, i, total, firstWrong:Set, answers:[], topic} */
 let run = null;
 function startPractice(topic, list){
-  const qs = list || shuffle(pool(topic)).slice(0, 10);
-  run = { mode:"practice", topic, label: topic ? `${topic.emoji} ${topic.en}` : "🔁 הטעויות שלי",
+  const qs = list || (topic.kind === "review" ? reviewQs(test) : shuffle(pool(topic)).slice(0, 10));
+  run = { mode:"practice", topic, label: topic ? `${topic.emoji} ${topic.kind === "review" ? "דף החזרה" : topic.en}` : "🔁 הטעויות שלי",
           queue: qs.map(q => ({...q})), total: qs.length, done: 0, wrong: [], retried: new Set() };
   enterScreen(); show("quizView"); showQ();
 }
@@ -485,7 +822,7 @@ function showQ(){
   $("quizCount").textContent = `${Math.min(run.done + 1, run.total)} / ${run.total}`;
   $("quizBar").style.width = (run.done / run.total * 100) + "%";
   $("qPrompt").textContent = (cur.retry ? "🔁 עוד ניסיון — " : "") + cur.prompt;
-  $("qFeedback").innerHTML = ""; $("qNext").hidden = true;
+  $("qFeedback").innerHTML = ""; $("qNext").hidden = true; $("qTr").hidden = true;
   const qt = $("qText"); qt.className = "q-text" + (cur.he ? " he" : ""); qt.innerHTML = "";
   if (cur.q){
     const parts = cur.q.split("___");
@@ -494,13 +831,32 @@ function showQ(){
   }
   qt.hidden = !cur.q;
   const ans = $("qAnswer"); ans.innerHTML = "";
+  if (cur.bank){
+    const b = document.createElement("div"); b.className = "wbank";
+    b.innerHTML = `<div class="wb-title">🧺 מחסן מילים · Word Bank</div><div class="wb-words en"></div>`;
+    b.querySelector(".wb-words").textContent = cur.bank.join(" · ");
+    ans.appendChild(b);
+  }
   if (cur.kind === "write"){
     const w = document.createElement("div"); w.className = "write";
-    w.innerHTML = `<input id="qInput" autocomplete="off" autocapitalize="off" spellcheck="false"><button class="btn" id="qCheck">✔ בדיקה</button>`;
+    w.innerHTML = `<input id="qInput" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"><button class="btn" id="qCheck">✔ בדיקה</button>`;
     ans.appendChild(w);
-    const inp = $("qInput"); setTimeout(() => inp.focus(), 50);
+    const inp = $("qInput"); OKbd.attach(inp); setTimeout(() => inp.focus(), 50);
     inp.onkeydown = e => { if (e.key === "Enter") checkWrite(); };
     $("qCheck").onclick = checkWrite;
+  } else if (cur.kind === "build"){
+    // האריחים: לחיצה מעבירה מילה לשורת המשפט, ולחיצה על מילה במשפט מחזירה אותה
+    const line = document.createElement("div"); line.className = "b-line"; line.id = "bLine";
+    const pool = document.createElement("div"); pool.className = "b-pool";
+    const chk = document.createElement("button"); chk.className = "btn"; chk.id = "qCheck"; chk.textContent = "✔ בדיקה"; chk.disabled = true;
+    const move = t => { if (locked) return; (t.parentNode === pool ? line : pool).appendChild(t); chk.disabled = pool.children.length > 0; };
+    shuffle(cur.tiles.map((w, i) => [w, i])).forEach(([w, i]) => {
+      const t = document.createElement("button"); t.className = "tile"; t.textContent = w; t.dataset.i = i;
+      t.onclick = () => move(t); pool.appendChild(t);
+    });
+    const row = document.createElement("div"); row.className = "center"; row.appendChild(chk);
+    ans.append(line, pool, row);
+    chk.onclick = () => { if (!pool.children.length) answer([...line.children].map(t => t.textContent).join(" "), chk); };
   } else {
     const o = document.createElement("div"); o.className = "opts";
     for (const opt of shuffle([...cur.o])){
@@ -516,12 +872,19 @@ function checkWrite(){
   const inp = $("qInput"); if (!inp.value.trim() || locked) return;
   answer(inp.value.trim(), inp);
 }
+// התרגום מופיע מתחת למשפט באנגלית, רק אחרי התשובה
+function showTr(){ const t = $("qTr"); t.textContent = cur.tr ? "בעברית: " + cur.tr : ""; t.hidden = !cur.tr; }
+function addTr(box, q){
+  if (!q.tr) return;
+  const s = document.createElement("span"); s.className = "tr"; s.textContent = "בעברית: " + q.tr; box.appendChild(s);
+}
 function fullSentence(q, a){ return q.sayText || (q.q.includes("___") ? q.q.replace("___", a) : (q.he ? a : q.q || a)); }
 
 function answer(given, el){
   if (locked) return; locked = true;
-  const ok = norm(given) === norm(cur.a);
+  const ok = cur.kind === "build" ? given === cur.a : [cur.a, ...(cur.alt || [])].some(x => norm(given) === norm(x));
   const blank = $("blank");
+  if ($("bLine")) $("bLine").classList.add(ok ? "ok" : "bad");
   document.querySelectorAll(".opt").forEach(b => b.disabled = true);
   if (run.mode === "mock"){
     el.classList.add("picked");
@@ -535,9 +898,10 @@ function answer(given, el){
     el.classList.add("ok");
     if (blank){ blank.textContent = cur.a; blank.classList.add("ok"); }
     $("qFeedback").innerHTML = `<span class="yes">${pick(["✓ נכון!", "✓ כל הכבוד!", "✓ מצוין!", "✓ יופי!"])}</span>`;
+    showTr();
     say(fullSentence(cur, cur.a));
     run.queue.shift(); run.done++;
-    setTimeout(next, 1400);
+    $("qNext").hidden = false; $("qNext").focus();   // לא עוברים לבד: יש זמן לקרוא את התרגום
   } else {
     el.classList.add("bad");
     document.querySelectorAll(".opt").forEach(b => { if (norm(b.textContent) === norm(cur.a)) b.classList.add("ok"); });
@@ -547,7 +911,7 @@ function answer(given, el){
     no.textContent = cur.kind === "write" ? "✗ כמעט! התשובה הנכונה: " : "✗ לא נכון. התשובה הנכונה: ";
     const right = document.createElement("b"); right.className = "en"; right.textContent = cur.a;
     const why = document.createElement("span"); why.className = "why"; why.textContent = "💡 " + cur.why;
-    fb.append(no, right, why);
+    fb.append(no, right, why); showTr();
     say(fullSentence(cur, cur.a));
     if (!cur.retry) run.wrong.push({...cur, given});
     run.queue.shift();
@@ -586,7 +950,7 @@ function finish(){
       const s = document.createElement("div"); s.className = "en say"; s.textContent = fullSentence(w, w.a);
       const g = document.createElement("div"); g.textContent = `התשובה שלך: ${w.given} · התשובה הנכונה: ${w.a}`;
       const y = document.createElement("div"); y.textContent = "💡 " + w.why;
-      d.append(s, g, y); box.appendChild(d);
+      d.append(s, g, y); addTr(d, w); box.appendChild(d);
     }
   }
   $("resPractice").hidden = !run.wrong.length;

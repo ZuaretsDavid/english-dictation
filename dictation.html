@@ -123,12 +123,27 @@ textarea{width:100%;min-height:220px;direction:rtl;font-family:var(--en-font),Ru
   .bb-tabs a{text-decoration:none;font-weight:700;font-size:18px;padding:7px 14px;border-radius:999px;color:#0F766E;border:2px solid #0F766E;background:#fff}
   .bb-tabs a.on{background:#0F766E;color:#fff}
   .bb-ver{align-self:center;font-size:12px;color:#9a9cad;direction:ltr;margin-inline-start:4px}
+/*KBD-CSS-START*/
+.okbd-tog{border:2px solid #0F766E;background:#fff;color:#0F766E;border-radius:12px;font:700 17px Rubik,system-ui,sans-serif;padding:8px 12px;cursor:pointer;margin:8px 4px 0;vertical-align:middle}
+.okbd-tog.on{background:#0F766E;color:#fff}
+.okbd{position:fixed;left:0;right:0;bottom:0;z-index:200;background:#e9edf3;border-top:3px solid #E0A562;padding:8px 4px calc(8px + env(safe-area-inset-bottom));direction:ltr;user-select:none;-webkit-user-select:none;touch-action:manipulation;box-shadow:0 -6px 20px rgba(43,45,66,.15)}
+.okbd[hidden]{display:none}
+.okbd-row{display:flex;justify-content:center;gap:5px;margin:5px auto;max-width:760px}
+.okbd button{flex:1 1 0;max-width:68px;min-width:0;height:54px;border:none;border-radius:10px;background:#fff;color:#2b2d42;font:400 30px Andika,sans-serif;box-shadow:0 2px 0 #b9c0cc;cursor:pointer;padding:0;touch-action:manipulation}
+.okbd button:active,.okbd button.down{background:#ffe066;transform:translateY(2px);box-shadow:none}
+.okbd .wide{max-width:none;flex:5 1 0}
+.okbd .mid{max-width:110px;flex:1.6 1 0;font:700 20px Rubik,system-ui,sans-serif}
+.okbd .go{background:#2ec4b6;color:#fff}
+.okbd .x{background:#eef0f6;color:#7a7d92}
+body.okbd-open{padding-bottom:260px}
+@media (max-width:560px){.okbd button{height:48px;font-size:24px}.okbd-row{gap:3px}}
+/*KBD-CSS-END*/
 </style>
 </head>
 <body>
 <nav class="bb" aria-label="ניווט ראשי">
   <a class="bb-brand" href="index.html" aria-label="unbox your English, לדף הבית"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="14" y="4" width="20" height="20" rx="5" fill="#0F766E" transform="rotate(-10 24 14)"/><text x="24" y="20" text-anchor="middle" font-family="Andika,Rubik,sans-serif" font-weight="700" font-size="15" fill="#fff" transform="rotate(-10 24 14)">A</text><path d="M6 22 L42 22 L39 44 L9 44 Z" fill="#E0A562"/><path d="M6 22 L2 15 M42 22 L46 15" stroke="#A8692E" stroke-width="3" stroke-linecap="round"/><rect x="21" y="22" width="6" height="22" fill="#F0C48A" opacity=".8"/></svg><span class="bb-txt"><b>unbox your English</b><small>לצאת מהקופסה עם יראת זוארץ</small></span></a>
-  <div class="bb-tabs"><a href="dictation.html" class="on">📝 הכתבה</a><a href="stories/index.html">📚 סיפורים</a><a href="tests.html">🎯 הכנה למבחן</a><span class="bb-ver" title="גרסה">v<!--VER-->2.1.2<!--/VER--></span></div>
+  <div class="bb-tabs"><a href="dictation.html" class="on">📝 הכתבה</a><a href="stories/index.html">📚 סיפורים</a><a href="tests.html">🎯 הכנה למבחן</a><span class="bb-ver" title="גרסה">v<!--VER-->2.2.0<!--/VER--></span></div>
 </nav>
 <header>
   <h1 onclick="goHome()">🏠 תרגול הכתבה באנגלית</h1>
@@ -320,6 +335,66 @@ textarea{width:100%;min-height:220px;direction:rtl;font-family:var(--en-font),Ru
 <div class="toast" id="toast"></div>
 
 <script>
+/*KBD-START*/
+const OKbd = (() => {
+  const KEY = "or-kbd";
+  let on = false, target = null, panel = null;
+  try { on = localStorage.getItem(KEY) === "1"; } catch(e){}
+  const rows = ["qwertyuiop", "asdfghjkl", "zxcvbnm"];
+  function build(){
+    panel = document.createElement("div"); panel.className = "okbd"; panel.hidden = true;
+    const row = keys => { const r = document.createElement("div"); r.className = "okbd-row"; keys.forEach(k => r.appendChild(k)); panel.appendChild(r); };
+    const key = (label, act, cls) => { const b = document.createElement("button"); b.type = "button"; b.textContent = label; if (cls) b.className = cls;
+      b.addEventListener("pointerdown", e => { e.preventDefault(); b.classList.add("down"); act(); });
+      ["pointerup", "pointerleave", "pointercancel"].forEach(ev => b.addEventListener(ev, () => b.classList.remove("down")));
+      return b; };
+    rows.forEach((s, i) => row([...s].map(c => key(c, () => type(c))).concat(i === 2 ? [key("⌫", back, "mid")] : [])));
+    row([key("✖", () => set(false), "mid x"), key("'", () => type("'")), key("space", () => type(" "), "wide"), key(".", () => type(".")), key("✔", enter, "mid go")]);
+    document.body.appendChild(panel);
+  }
+  function vis(){ return !!(target && target.isConnected && target.offsetParent !== null); }   // לא נעלמת בין מילה למילה
+  function live(){ return vis() && !target.disabled && !target.readOnly; }
+  function type(s){
+    if (!live()) return;
+    const el = target, a = el.selectionStart ?? el.value.length, b = el.selectionEnd ?? a;
+    el.value = el.value.slice(0, a) + s + el.value.slice(b);
+    try { el.setSelectionRange(a + s.length, a + s.length); } catch(e){}
+    el.dispatchEvent(new Event("input", {bubbles:true}));
+  }
+  function back(){
+    if (!live()) return;
+    const el = target, a = el.selectionStart ?? el.value.length, b = el.selectionEnd ?? a;
+    const from = a === b ? Math.max(0, a - 1) : a;
+    el.value = el.value.slice(0, from) + el.value.slice(b);
+    try { el.setSelectionRange(from, from); } catch(e){}
+    el.dispatchEvent(new Event("input", {bubbles:true}));
+  }
+  function enter(){ if (live()) target.dispatchEvent(new KeyboardEvent("keydown", {key:"Enter", bubbles:true, cancelable:true})); }
+  function sync(){
+    const show = on && vis();
+    if (panel) panel.hidden = !show;
+    document.body.classList.toggle("okbd-open", !!show);
+    document.querySelectorAll(".okbd-tog").forEach(t => { t.classList.toggle("on", on); t.textContent = on ? "⌨️ סגירת המקלדת" : "⌨️ מקלדת"; });
+    if (target) target.inputMode = on ? "none" : "text";      // במקלדת שלנו: בלי מקלדת המערכת בטאבלט
+  }
+  function set(v){ on = v; try { localStorage.setItem(KEY, v ? "1" : "0"); } catch(e){} sync(); if (live()) target.focus(); }
+  function attach(input){
+    if (!panel) build();
+    target = input;
+    if (!input.nextElementSibling || !input.nextElementSibling.classList.contains("okbd-tog")){
+      const t = document.createElement("button"); t.type = "button"; t.className = "okbd-tog";
+      t.addEventListener("pointerdown", e => e.preventDefault());
+      t.onclick = () => set(!on);
+      input.after(t);
+    }
+    input.addEventListener("focus", () => { target = input; sync(); });
+    sync();
+  }
+  setInterval(() => { if (panel) { const s = on && vis(); if (panel.hidden === s) sync(); } }, 300);
+  return { attach, sync };
+})();
+/*KBD-END*/
+
 const DEFAULT_TEXT = `# הכתבה 17.11.2026
 look after - לטפל / להשגיח
 animals - בעלי חיים
@@ -533,7 +608,7 @@ function fcMove(d){ fc.i=(fc.i+d+fc.list.length)%fc.list.length; fc.flipped=fals
 
 /* ---------- DICTATION ---------- */
 let dict={};
-const dictInput = $('#dictInput');
+const dictInput = $('#dictInput'); OKbd.attach(dictInput);
 function startDictation(list){
   dict={list:shuffle([...(list||pool())]),i:0,wrong:[],tries:0,hint:0,done:false,orig:list};
   show('dictation'); dictShow();
