@@ -145,7 +145,7 @@ body.okbd-open{padding-bottom:260px}
 <body>
 <nav class="bb" aria-label="ניווט ראשי">
   <a class="bb-brand" href="index.html" aria-label="unbox your English, לדף הבית"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="14" y="4" width="20" height="20" rx="5" fill="#0F766E" transform="rotate(-10 24 14)"/><text x="24" y="20" text-anchor="middle" font-family="Andika,Rubik,sans-serif" font-weight="700" font-size="15" fill="#fff" transform="rotate(-10 24 14)">A</text><path d="M6 22 L42 22 L39 44 L9 44 Z" fill="#E0A562"/><path d="M6 22 L2 15 M42 22 L46 15" stroke="#A8692E" stroke-width="3" stroke-linecap="round"/><rect x="21" y="22" width="6" height="22" fill="#F0C48A" opacity=".8"/></svg><span class="bb-txt"><b>unbox your English</b><small>לצאת מהקופסה עם יראת זוארץ</small></span></a>
-  <div class="bb-tabs"><a href="dictation.html">📝 הכתבה</a><a href="stories/index.html">📚 סיפורים</a><a href="tests.html" class="on">🎯 הכנה למבחן</a><span class="bb-ver" title="גרסה">v<!--VER-->2.2.0<!--/VER--></span></div>
+  <div class="bb-tabs"><a href="dictation.html">📝 הכתבה</a><a href="stories/index.html">📚 סיפורים</a><a href="tests.html" class="on">🎯 הכנה למבחן</a><span class="bb-ver" title="גרסה">v<!--VER-->2.3.0<!--/VER--></span></div>
 </nav>
 <header>
   <h1>🎯 הכנה למבחן</h1>
@@ -168,6 +168,11 @@ body.okbd-open{padding-bottom:260px}
         <button class="btn big review-btn" id="reviewBtn">📄 דף החזרה של המורה — כל המשימות לפי הסדר</button>
         <div class="t-best" id="reviewBest"></div>
       </div>
+    </div>
+
+    <div id="storiesBox">
+      <h2>📚 סיפורים למבחן</h2>
+      <div class="links" id="storyLinks"></div>
     </div>
 
     <div id="linksBox">
@@ -285,7 +290,8 @@ const OKbd = (() => {
 
 /*DATA-START*/
 /* ===== המבחנים =====
-   כל מבחן: { date:"YYYY-MM-DD", title, topics:[...], links:[{title,url}] }
+   כל מבחן: { date:"YYYY-MM-DD", title, topics:[...], links:[{title,url}], stories:[{title,url}] }
+   stories = סיפורים מהאתר שצריך לקרוא למבחן (נפתחים באותו חלון)
    כל נושא: { id, emoji, en, he, kind, rule:`HTML`, ...נתונים }
    kind = "aan" | "thereis" | "plural" | "can" | "bank" | "room" | "vocab" | "items"
    review = דף החזרה של המורה (אופציונלי): כפתור "📄 דף החזרה" שעובר על כל המשימות לפי הסדר
@@ -293,6 +299,10 @@ const OKbd = (() => {
    בכתבת HTML של rule: <span class="say">...</span> = דוגמה שמוקראת בלחיצה */
 const TESTS = [
   { date:"2026-12-01", title:"מבדק באנגלית — Unit 1 (Magical)",
+    stories:[
+      {title:"🍓 Fruits — סיפור מהמורה", url:"stories/03.html"},
+      {title:"🍎 Lily and the Apple Tree — עמוד 52 בספר", url:"stories/52.html"}
+    ],
     links:[
       {title:"🎡 Unit 1 Part 2 — a / an, יחיד ורבים (גלגל)", url:"https://wordwall.net/resource/77459335/magical-unit-1-part-2-focus-on-form-by-english-adventure"},
       {title:"🗂️ Unit 1 Part 3 — There is / There are (מיון)", url:"https://wordwall.net/resource/77460168/magical-unit-1-part-3-focus-on-form-by-english-adventure"},
@@ -306,7 +316,7 @@ const TESTS = [
       { id:"aan", emoji:"🍎", en:"A / An", he:"מתי a ומתי an לפני שם עצם ביחיד", kind:"aan",
         a:["dog","book","river","teacher","mouse","bird","garden","banana","bus","car","monkey","tree","bicycle","picnic","salad","rabbit","mountain","forest","cat","ball","horse","plant","sheep","field","farm","bottle"],
         an:["apple","elephant","umbrella","egg","orange","onion","adult","animal","ice cream","apricot","owl","eagle","octopus","ant","uncle","aunt"],
-        he:{dog:"כלב",book:"ספר",river:"נהר",teacher:"מורה",mouse:"עכבר",bird:"ציפור*",garden:"גינה*",banana:"בננה*",bus:"אוטובוס",car:"מכונית*",
+        heW:{dog:"כלב",book:"ספר",river:"נהר",teacher:"מורה",mouse:"עכבר",bird:"ציפור*",garden:"גינה*",banana:"בננה*",bus:"אוטובוס",car:"מכונית*",
             monkey:"קוף",tree:"עץ",bicycle:"אופניים",picnic:"פיקניק",salad:"סלט",rabbit:"ארנב",mountain:"הר",forest:"יער",cat:"חתול",ball:"כדור",
             horse:"סוס",plant:"צמח",sheep:"כבשה*",field:"שדה",farm:"חווה*",bottle:"בקבוק",apple:"תפוח",elephant:"פיל",umbrella:"מטרייה*",egg:"ביצה*",
             orange:"תפוז",onion:"בצל",adult:"מבוגר",animal:"חיה*","ice cream":"גלידה*",apricot:"משמש",owl:"ינשוף",eagle:"נשר",octopus:"תמנון",
@@ -330,7 +340,7 @@ const TESTS = [
         one:["a mouse","a river","an animal","a bird","a garden","a dog","an apple","a tree","a rabbit","an elephant","a monkey","a bicycle","a horse","a mountain","a plant"],
         many:["rabbits","mountains","birds","forests","animals","two dogs","three apples","a lot of apples","five trees","many flowers","two monkeys","four birds",
               "many sheep","three children","a lot of bottles","four plants","two bicycles"],
-        he:{"a mouse":"עכבר","a river":"נהר","an animal":"חיה","a bird":"ציפור","a garden":"גינה","a dog":"כלב","an apple":"תפוח","a tree":"עץ",
+        heW:{"a mouse":"עכבר","a river":"נהר","an animal":"חיה","a bird":"ציפור","a garden":"גינה","a dog":"כלב","an apple":"תפוח","a tree":"עץ",
             "a rabbit":"ארנב","an elephant":"פיל","a monkey":"קוף","a bicycle":"אופניים","a horse":"סוס","a mountain":"הר","a plant":"צמח",
             rabbits:"ארנבים",mountains:"הרים",birds:"ציפורים",forests:"יערות",animals:"חיות","two dogs":"שני כלבים","three apples":"שלושה תפוחים",
             "a lot of apples":"הרבה תפוחים","five trees":"חמישה עצים","many flowers":"הרבה פרחים","two monkeys":"שני קופים","four birds":"ארבע ציפורים",
@@ -584,7 +594,7 @@ const GEN = {
     const frames = ["It is ___ X.", "This is ___ X.", "There is ___ X."];
     const why = (w, ans) => ans === "an" ? `המילה ${w} מתחילה בצליל של תנועה (${w[0]}), ולכן an.` : `המילה ${w} מתחילה בצליל של עיצור (${w[0]}), ולכן a.`;
     // תרגום: "זה/זאת" לפי המין במילון he (כוכבית = נקבה), ו"יש" ל-There is
-    const heOf = (w, f) => { const x = (t.he || {})[w]; if (!x) return undefined; const fem = x.endsWith("*"), n = x.replace("*", "");
+    const heOf = (w, f) => { const x = (t.heW || {})[w]; if (!x) return undefined; const fem = x.endsWith("*"), n = x.replace("*", "");
       return f.startsWith("There") ? `יש ${n}.` : `${fem ? "זאת" : "זה"} ${n}.`; };
     const out = [...t.a.map(w => [w, "a"]), ...t.an.map(w => [w, "an"])].map(([w, ans]) => { const f = pick(frames); return {
       kind:"choice", prompt:"השלימי a או an", q: f.replace("X", w), o:["a", "an"], a: ans, why: why(w, ans), tr: heOf(w, f) }; });
@@ -595,7 +605,7 @@ const GEN = {
     return out;
   },
   thereis(t){
-    const H = t.he || {}, tr = (x, p) => H[x] && H[p] ? `יש ${H[x]} ${H[p]}.` : undefined;   // There is/are = יש
+    const H = t.heW || {}, tr = (x, p) => H[x] && H[p] ? `יש ${H[x]} ${H[p]}.` : undefined;   // There is/are = יש
     const mk = (x, ans) => {
       const last = x.split(" ").pop().replace(/s$/, "");
       const place = pick(t.places.filter(p => !p.includes(last))) || t.places[0];
@@ -778,6 +788,12 @@ function renderHome(){
   $("mockBest").textContent = B.mock != null ? `⭐ התוצאה הכי טובה במבחן הניסיון: ${B.mock}` : "";
   $("reviewBox").hidden = !(test.review && test.review.length);
   $("reviewBest").textContent = B.review != null ? `⭐ התוצאה הכי טובה בדף החזרה: ${B.review}%` : "";
+  const sl = $("storyLinks"); sl.innerHTML = "";
+  $("storiesBox").hidden = !(test.stories && test.stories.length);
+  for (const l of test.stories || []){
+    const a = document.createElement("a"); a.href = l.url; a.textContent = l.title;   // באותו חלון: "אחורה" חוזר לכאן
+    sl.appendChild(a);
+  }
   const links = $("links"); links.innerHTML = "";
   $("linksBox").hidden = !(test.links && test.links.length);
   for (const l of test.links || []){
