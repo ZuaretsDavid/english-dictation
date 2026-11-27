@@ -127,12 +127,20 @@
   .bb-tabs a{text-decoration:none;font-weight:700;font-size:18px;padding:7px 14px;border-radius:999px;color:#0F766E;border:2px solid #0F766E;background:#fff}
   .bb-tabs a.on{background:#0F766E;color:#fff}
   .bb-ver{align-self:center;font-size:12px;color:#9a9cad;direction:ltr;margin-inline-start:4px}
+/*CHEER-CSS-START*/
+.ocf{position:fixed;top:-20px;width:10px;height:14px;border-radius:2px;pointer-events:none;z-index:9999;animation:ocf-fall linear forwards}
+@keyframes ocf-fall{0%{transform:translate(0,0) rotate(0);opacity:1}80%{opacity:1}100%{transform:translate(var(--dx),105vh) rotate(var(--rot));opacity:0}}
+@media (prefers-reduced-motion:reduce){.ocf{display:none}}
+.ocheer-btn{border:2px solid #0F766E;background:#fff;border-radius:999px;width:38px;height:38px;font-size:18px;line-height:1;cursor:pointer;padding:0;flex:none}
+.ocheer-btn.fixed{position:fixed;left:10px;bottom:10px;z-index:9998;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.ocheer-toast{position:fixed;left:50%;top:70px;transform:translateX(-50%);background:#0F766E;color:#fff;font:700 17px Rubik,system-ui,sans-serif;padding:8px 18px;border-radius:999px;z-index:10000;pointer-events:none;transition:opacity .3s;direction:rtl}
+/*CHEER-CSS-END*/
 </style>
 </head>
 <body>
 <nav class="bb" aria-label="ניווט ראשי">
   <a class="bb-brand" href="../index.html" aria-label="unbox your English, לדף הבית"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="14" y="4" width="20" height="20" rx="5" fill="#0F766E" transform="rotate(-10 24 14)"/><text x="24" y="20" text-anchor="middle" font-family="Andika,Rubik,sans-serif" font-weight="700" font-size="15" fill="#fff" transform="rotate(-10 24 14)">A</text><path d="M6 22 L42 22 L39 44 L9 44 Z" fill="#E0A562"/><path d="M6 22 L2 15 M42 22 L46 15" stroke="#A8692E" stroke-width="3" stroke-linecap="round"/><rect x="21" y="22" width="6" height="22" fill="#F0C48A" opacity=".8"/></svg><span class="bb-txt"><b>unbox your English</b><small>לצאת מהקופסה עם יראת זוארץ</small></span></a>
-  <div class="bb-tabs"><a href="../dictation.html">📝 הכתבה</a><a href="../stories/index.html" class="on">📚 סיפורים</a><a href="../tests.html">🎯 הכנה למבחן</a><span class="bb-ver" title="גרסה">v<!--VER-->2.3.0<!--/VER--></span></div>
+  <div class="bb-tabs"><a href="../dictation.html">📝 הכתבה</a><a href="../stories/index.html" class="on">📚 סיפורים</a><a href="../tests.html">🎯 הכנה למבחן</a><span class="bb-ver" title="גרסה">v<!--VER-->2.4.0<!--/VER--></span></div>
 </nav>
 <header>
   <h1>📚 הסיפורים של אור</h1>
@@ -264,6 +272,114 @@ const STORIES = [
   ]}
 ];
 /*DATA-END*/
+/*CHEER-START*/
+const OCheer = (() => {
+  const HE = {
+    good: ["כל הכבוד!", "יָפֶה מְאוֹד!", "תשובה נכונה!", "מצוין!", "אַתְּ אַלּוּפָה!", "נהדר!", "יופי של תשובה!"],
+    retry: ["נַסִּי שׁוּב", "כִּמְעַט! נַסִּי שׁוּב", "לא נורא, נַסִּי שׁוּב"],
+    bad: ["לא נורא!", "אוּפְּס, לא נכון", "לא נורא, נִלְמַד מזה"],
+    win: ["וואו! כל הכבוד!", "מושלם! אַתְּ אַלּוּפָה!"]
+  };
+  const EN = {
+    good: ["Great job!", "Well done!", "Excellent!", "Correct!", "Awesome!"],
+    retry: ["Try again!", "Almost! Try again."],
+    bad: ["Oops! Not quite.", "That's OK!"],
+    win: ["Wow! Perfect!", "Amazing work!"]
+  };
+  const pick = a => a[Math.floor(Math.random() * a.length)];
+  const MODES = { all:["🔊","קול ומנגינה פועלים"], off:["🔇","השתקה"] };
+  const ORDER = ["all", "off"];
+  let mode = "all";
+  try { mode = localStorage.getItem("or-cheer") || "all"; } catch(e){}
+  if (!MODES[mode]) mode = "all";
+  let btn = null, toastT = 0;
+  function paint(){ if (btn){ btn.textContent = MODES[mode][0]; btn.title = MODES[mode][1] + " (לחצי כדי לשנות)"; btn.setAttribute("aria-label", btn.title); } }
+  function toast(t){
+    let el = document.querySelector(".ocheer-toast");
+    if (!el){ el = document.createElement("div"); el.className = "ocheer-toast"; document.body.appendChild(el); }
+    el.textContent = t; el.style.opacity = 1; clearTimeout(toastT); toastT = setTimeout(() => el.style.opacity = 0, 1400);
+  }
+  function addButton(){
+    if (btn) return;
+    btn = document.createElement("button"); btn.type = "button"; btn.className = "ocheer-btn";
+    btn.onclick = () => {
+      mode = ORDER[(ORDER.indexOf(mode) + 1) % ORDER.length];
+      try { localStorage.setItem("or-cheer", mode); } catch(e){}
+      paint(); toast(MODES[mode][0] + " " + MODES[mode][1]);
+      if (mode !== "off") happy();
+    };
+    const tabs = document.querySelector(".bb-tabs");
+    if (tabs) tabs.insertBefore(btn, tabs.querySelector(".bb-ver"));
+    else { btn.classList.add("fixed"); document.body.appendChild(btn); }
+    paint();
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", addButton); else addButton();
+  let ctx = null, heV = null, enV = null;
+  function voices(){
+    if (!("speechSynthesis" in window)) return;
+    const vs = speechSynthesis.getVoices();
+    const he = vs.filter(v => /^(he|iw)/i.test(v.lang));
+    heV = he.find(v => /hila/i.test(v.name)) || he.find(v => /natural|online/i.test(v.name)) || he[0] || null;
+    const en = vs.filter(v => /^en[-_]US/i.test(v.lang));
+    enV = en.find(v => /(jenny|aria|ava|emma|michelle).*natural/i.test(v.name)) || en.find(v => /natural|online/i.test(v.name)) || en[0] || null;
+  }
+  if ("speechSynthesis" in window){ voices(); speechSynthesis.addEventListener("voiceschanged", voices); }
+
+  // צלילים (Web Audio, בלי קבצים)
+  function tones(notes, type, vol, step, len){
+    if (mode === "off") return;
+    try {
+      ctx = ctx || new (window.AudioContext || window.webkitAudioContext)();
+      if (ctx.state === "suspended") ctx.resume();
+      notes.forEach((f, i) => {
+        if (!f) return;
+        const o = ctx.createOscillator(), g = ctx.createGain(), t = ctx.currentTime + i * step;
+        o.type = type; o.frequency.value = f;
+        g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + len);
+        o.connect(g).connect(ctx.destination); o.start(t); o.stop(t + len + 0.05);
+      });
+    } catch(e){}
+  }
+  const happy = () => { tones([523, 659, 784, 1047], "triangle", 0.2, 0.09, 0.35); tones([0, 0, 0, 1319], "sine", 0.08, 0.09, 0.5); };
+  const oops  = () => tones([392, 330], "sine", 0.12, 0.16, 0.3);
+  const fanfare = () => { tones([523, 659, 784, 1047, 0, 784, 1047], "triangle", 0.2, 0.12, 0.4); tones([262, 330, 392, 523, 0, 392, 523], "sine", 0.08, 0.12, 0.5); };
+
+  // קונפטי שיורד מלמעלה ונעלם
+  const COLORS = ["#0F766E", "#E0A562", "#ff5d8f", "#ffd23f", "#4cc9f0", "#8b5cf6", "#34d399"];
+  function confetti(n){
+    for (let i = 0; i < n; i++){
+      const s = document.createElement("i"); s.className = "ocf";
+      s.style.left = Math.random() * 100 + "vw";
+      s.style.background = pick(COLORS);
+      if (Math.random() < 0.3) s.style.borderRadius = "50%";
+      s.style.setProperty("--dx", (Math.random() * 160 - 80) + "px");
+      s.style.setProperty("--rot", (Math.random() * 900 - 450) + "deg");
+      const dur = 1.6 + Math.random() * 1.4;
+      s.style.animationDuration = dur + "s"; s.style.animationDelay = Math.random() * 0.4 + "s";
+      document.body.appendChild(s); setTimeout(() => s.remove(), (dur + 0.5) * 1000);
+    }
+  }
+
+  function talk(kind, after){
+    if (!("speechSynthesis" in window)){ if (after) after(); return; }
+    speechSynthesis.cancel();
+    if (mode !== "all"){ if (after) after(); return; }
+    if (!heV && !enV) voices();
+    const u = new SpeechSynthesisUtterance(pick((heV ? HE : EN)[kind]));
+    if (heV){ u.voice = heV; u.lang = heV.lang; u.rate = 1; }
+    else { if (enV) u.voice = enV; u.lang = enV ? enV.lang : "en-US"; u.rate = 0.95; }
+    speechSynthesis.speak(u);
+    if (after) after();
+  }
+  return {
+    good(after){ happy(); confetti(45); talk("good", after); },
+    bad(retry, after){ oops(); talk(retry ? "retry" : "bad", after); },
+    win(after){ fanfare(); confetti(140); setTimeout(() => confetti(80), 700); talk("win", after); },
+    confetti, happy
+  };
+})();
+/*CHEER-END*/
 
 // מילים שלא מתאימות למשחק ההתאמה (קשה לתרגם אותן לבד)
 const GAME_SKIP = new Set(["a/an","the","it","to","in","on","my","we","she","his","your","this","there","too","by","from","with","or","can","have","what","when","where","which","who","why","under","near","behind","down","every","more","same","because","a lot of","now","say","look","take","make","come","see","like","one","fall","old"]);
@@ -398,11 +514,12 @@ function renderQuiz(){
         hush();
         if (val === ans){
           done = true; x.classList.add("ok"); h.className = "q-hint yes"; h.textContent = "✓ נכון, כל הכבוד!";
-          speak("Correct!", "en");
-          if (--left === 0) sc.textContent = "🏆 כל הכבוד אור! ענית נכון על כל המשפטים";
+          if (--left === 0){ sc.textContent = "🏆 כל הכבוד אור! ענית נכון על כל המשפטים"; OCheer.win(); }
+          else OCheer.good();
         } else {
           x.classList.add("bad"); setTimeout(() => x.classList.remove("bad"), 700);
           h.className = "q-hint no"; h.textContent = "✗ לא נכון, נסי שוב. 💡 " + hint;
+          OCheer.bad(true);
         }
       };
       btns.appendChild(x);
@@ -581,7 +698,7 @@ function gameClick(b){
     a.classList.add("ok"); b.classList.add("ok"); markSeen(a.dataset.key);
     if (--gameLeft === 0){
       document.getElementById("win").classList.add("show");
-      speak("Great job!", "en", {rate:0.85});
+      OCheer.win();
     }
   } else {
     [a, b].forEach(x => { x.classList.remove("bad"); void x.offsetWidth; x.classList.add("bad"); setTimeout(() => x.classList.remove("bad"), 600); });
